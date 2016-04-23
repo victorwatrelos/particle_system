@@ -18,12 +18,7 @@ class Task {
         std::string         *getSrc(std::string filename) const;
         void                enqueueKernel(cl_command_queue queue);
         void                releaseKernel();
-        void                setBoxSize(cl_float);
-        void                setCellSize(std::string size);
         void                setMaxGid(std::string maxGid);
-        void                setSizeGrid(std::string sizeX, std::string sizeY, std::string sizeZ);
-        void                setCoefSizeCell(std::string size);
-        void                setOffset(std::string offset);
         std::string         getOptions();
     protected:
         void                                _createKernel(std::string filename, std::string kernelName);
@@ -37,7 +32,6 @@ class Task {
         size_t                              *_maxWorkItemSize;
         cl_int                              _nbParticle;
         cl_int                              _maxGid;
-        cl_float                            _sizeBox;
         std::vector<std::string>            _buildOptions;
         std::map<std::string, std::string>  _defineOptions;
 };

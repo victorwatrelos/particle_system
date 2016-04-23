@@ -16,6 +16,7 @@ void	OpenGL::_initOpenGL(void) {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glViewport(0, 0, this->_width, this->_height);
+	glEnable(GL_PROGRAM_POINT_SIZE);
 	this->_initShader();
 	this->_initBuffer();
 	glUseProgram(this->_shader_program);
@@ -35,10 +36,10 @@ void		OpenGL::_initBuffer(void)
 	GLuint						attrloc;
 	GLfloat						lstPt[] =
 	{
-		3.1f, 2.1f, -1.1f,
-		0.0f, 0.0f, 2.f,
-		2.f, 3.f, -1.f,
-		2.f, 5.f, -1.f
+		3.1f, 2.1f, -5.1f,
+		0.0f, 0.0f, 6.f,
+		2.f, 3.f, -10.f,
+		2.f, 5.f, -7.f
 	};
 	GLfloat						mesh[] = 
 	{
@@ -68,7 +69,7 @@ void		OpenGL::_initBuffer(void)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * 3, elements, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo[2]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 4, lstPt, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 4 * 3, lstPt, GL_STATIC_DRAW);
 	attrloc = glGetAttribLocation(this->_shader_program, "instancePosition");
 	glEnableVertexAttribArray(attrloc);
 	glVertexAttribPointer(attrloc, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -81,9 +82,9 @@ void		OpenGL::draw(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(this->_shader_program);
 	glBindVertexArray(this->_vao);
-	//glDrawElementsInstanced(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0, 4);
+	glDrawElementsInstanced(GL_POINTS, 3, GL_UNSIGNED_INT, 0, 4);
 	//glDrawArrays(GL_TRIANGLES, 0, 3);
-	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+	//glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 }
 
 void		OpenGL::_setUniformLocation(void)
@@ -121,12 +122,10 @@ void		OpenGL::_initShader(void)
 	glAttachShader(this->_shader_program, this->_vs);
 	glAttachShader(this->_shader_program, this->_fs);
 	glLinkProgram(this->_shader_program);
-	/*
 	glDetachShader(this->_shader_program, this->_vs);
 	glDetachShader(this->_shader_program, this->_fs);
 	glDeleteShader(this->_vs);
 	glDeleteShader(this->_fs);
-	*/
 	glUseProgram(this->_shader_program);
 }
 
