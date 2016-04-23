@@ -7,14 +7,17 @@ OpenGL::OpenGL(void)
 
 OpenGL::OpenGL(int width, int height) 
 	: _width(width), _height(height) {
+	std::cout << "width: " << _width << " height: " << _height << std::endl;
 	this->_initOpenGL();
 }
 
 void	OpenGL::_initOpenGL(void) {
+	std::cout << "OK" << std::endl;
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glViewport(0, 0, this->_width, this->_height);
 	this->_initShader();
+	this->_initBuffer();
 	glUseProgram(this->_shader_program);
 	this->_setUniformLocation();
 	this->_setStaticUniform();
@@ -32,19 +35,45 @@ void		OpenGL::_initBuffer(void)
 	GLuint						attrloc;
 	GLfloat						lstPt[] =
 	{
-		3.1f, 2.1f, -10.1f, 1.0f,
-		0.0f, 0.0f, -10.f, 1.0f,
-		2.f, 3.f, -10.f, 1.0f
+		3.1f, 2.1f, -1.1f,
+		0.0f, 0.0f, 2.f,
+		2.f, 3.f, -1.f,
+		2.f, 5.f, -1.f
+	};
+	GLfloat						mesh[] = 
+	{
+		-1.f, -1.f, -5.f,
+		1.f, -1.f, -5.f,
+		0.f, 1.f, -5.f
+	};
+	GLuint						elements[] =
+	{
+		0, 1, 2
 	};
 
+	std::cout << "init buffer" << std::endl;
 	this->_nbParticles = 3;
 	glGenVertexArrays(1, &(this->_vao));
 	glBindVertexArray(this->_vao);
-	glGenBuffers(1, this->_vbo);
+	glGenBuffers(3, this->_vbo);
+
+
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * this->_nbParticles * 4, lstPt, GL_STATIC_DRAW);
-	attrloc = glGetAttribLocation(this->_shader_program, "in_ParticlePos");
-	glVertexAttribPointer(attrloc, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 9, mesh, GL_STATIC_DRAW);
+	attrloc = glGetAttribLocation(this->_shader_program, "in_Position");
+	glVertexAttribPointer(attrloc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(attrloc);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->_vbo[1]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * 3, elements, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo[2]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 4, lstPt, GL_STATIC_DRAW);
+	attrloc = glGetAttribLocation(this->_shader_program, "instancePosition");
+	glEnableVertexAttribArray(attrloc);
+	glVertexAttribPointer(attrloc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribDivisor(attrloc, 1);
+	glBindVertexArray(0);
 }
 
 void		OpenGL::draw(void)
@@ -52,7 +81,9 @@ void		OpenGL::draw(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(this->_shader_program);
 	glBindVertexArray(this->_vao);
-	glDrawArraysInstanced(GL_POINTS, 0, 1, this->_nbParticles);
+	//glDrawElementsInstanced(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0, 4);
+	//glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 }
 
 void		OpenGL::_setUniformLocation(void)
@@ -82,7 +113,7 @@ void		OpenGL::_initShader(void)
 	vertSrc = this->_getSrc("shaders/vertex_shader.vert");
 	std::cout << "Framgent shader compilation" << std::endl;
 	fragSrc = this->_getSrc("shaders/fragment_shader.frag");
-	std::cout << vertSrc << " " << fragSrc << std::endl;
+	std::cout << *vertSrc << " " << *fragSrc << std::endl;
 	this->_vs = this->_getShader(vertSrc, GL_VERTEX_SHADER);
 	this->_fs = this->_getShader(fragSrc, GL_FRAGMENT_SHADER);
 	if (!(this->_shader_program = glCreateProgram()))
@@ -90,10 +121,13 @@ void		OpenGL::_initShader(void)
 	glAttachShader(this->_shader_program, this->_vs);
 	glAttachShader(this->_shader_program, this->_fs);
 	glLinkProgram(this->_shader_program);
+	/*
 	glDetachShader(this->_shader_program, this->_vs);
 	glDetachShader(this->_shader_program, this->_fs);
 	glDeleteShader(this->_vs);
 	glDeleteShader(this->_fs);
+	*/
+	glUseProgram(this->_shader_program);
 }
 
 GLuint		OpenGL::_getShader(const std::string *shaderSrc, GLenum shaderType)

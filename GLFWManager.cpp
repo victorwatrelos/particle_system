@@ -21,6 +21,7 @@ void	GLFWManager::run(void) {
 
 void	GLFWManager::_initGlfw(void)
 {
+    glfwSetErrorCallback(error_callback);
     if (!glfwInit())
         exit(1);
 	glfwWindowHint(GLFW_SAMPLES, 4);
@@ -29,7 +30,6 @@ void	GLFWManager::_initGlfw(void)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwSetErrorCallback(error_callback);
     this->_window = glfwCreateWindow(this->_width, this->_height, "particle system", NULL, NULL);
     if (!this->_window)
 		exit(1);
@@ -37,6 +37,7 @@ void	GLFWManager::_initGlfw(void)
 	glfwSwapInterval(1);
 	glfwSetWindowUserPointer(this->_window, this);
 	glfwGetFramebufferSize(this->_window, &(this->_frameBufferWidth), &(this->_frameBufferHeight));
+	std::cout << "start opengl" << std::endl;
 	this->_openGL = new OpenGL(this->_frameBufferWidth, this->_frameBufferHeight);
 }
 

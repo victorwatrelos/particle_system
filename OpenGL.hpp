@@ -25,7 +25,7 @@ class OpenGL {
 		uint32_t	_nbParticles;
 		GLuint		_vs;
 		GLuint		_fs;
-		GLuint		_vbo[1];
+		GLuint		_vbo[3];
 		GLuint		_vao;
 		GLuint		_shader_program;
 		GLint		_uloc_P;
