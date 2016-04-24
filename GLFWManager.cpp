@@ -6,17 +6,21 @@ static void		error_callback(int error, const char* description)
 }
 
 GLFWManager::GLFWManager( void ) 
-	: _width(640), _height(480), _nbParticles(90000) {
+	: _width(640), _height(480), _nbParticles(100) {
 	this->_initGlfw();
 }
 
 void	GLFWManager::run(void) {
+	char	str[512];
+
 	while (!glfwWindowShouldClose(this->_window))
 	{
 		this->_openCL->loop();
 		this->_openGL->draw();
 		glfwPollEvents();
 		glfwSwapBuffers(this->_window);
+		(void)str;
+		read(0, str, 512);
 	}
 }
 
