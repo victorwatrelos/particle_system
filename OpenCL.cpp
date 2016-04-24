@@ -29,6 +29,12 @@ void	OpenCL::_setKernelArg(void)
 	this->_setApplyVelArg();
 }
 
+void	OpenCL::setPos(double x, double y)
+{
+	this->_posX = x;
+	this->_posY = y;
+}
+
 void	OpenCL::_setApplyVelArg(void)
 {
 	cl_kernel	kernel = this->_taskApplyVel->getKernel();
@@ -40,6 +46,12 @@ void	OpenCL::_setApplyVelArg(void)
 	checkCLSuccess(clSetKernelArg(kernel, 1, sizeof(cl_mem),
 				&this->_particlesVelocity),
 			"clSetKernelArg setApplyVelArg 1");
+	checkCLSuccess(clSetKernelArg(kernel, 2, sizeof(cl_double),
+				&this->_posX),
+			"clSetKernelArg setApplyVelArg 2");
+	checkCLSuccess(clSetKernelArg(kernel, 3, sizeof(cl_double),
+				&this->_posY),
+			"clSetKernelArg setApplyVelArg 3");
 }
 
 void	OpenCL::_setInitParticlesArg(void)
@@ -71,6 +83,16 @@ void	OpenCL::_initTask(void)
 
 void	OpenCL::loop(void)
 {
+	cl_kernel	kernel;
+
+	kernel = this->_taskApplyVel->getKernel();
+
+	checkCLSuccess(clSetKernelArg(kernel, 2, sizeof(cl_double),
+				&this->_posX),
+			"clSetKernelArg setApplyVelArg 2");
+	checkCLSuccess(clSetKernelArg(kernel, 3, sizeof(cl_double),
+				&this->_posY),
+			"clSetKernelArg setApplyVelArg 3");
 	this->_taskApplyVel->enqueueKernel(this->_commandQueue);
 	clFinish(this->_commandQueue);
 }

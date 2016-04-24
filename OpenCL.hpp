@@ -16,6 +16,7 @@ class OpenCL {
 		virtual ~OpenCL ( void );
 		static void		checkCLSuccess(cl_int errNum, std::string name);
 		void			loop(void);
+		void			setPos(double x, double y);
 
 		OpenCL &operator=(const OpenCL &);
 		friend std::ostream &operator<< (std::ostream &, const OpenCL &);
@@ -48,7 +49,8 @@ class OpenCL {
 		float				_boxX;
 		float				_boxY;
 		float				_boxZ;
-
+		double				_posX;
+		double				_posY;
 
 };
 

@@ -15,15 +15,15 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos)
 {
 	GLFWManager	*glfwManager;
 
-	GLFWmanager = reinterpret_cast<GLFWManager *>(glfwGetWindowUserPointer(window));
-	GLFWManager->setCursorPos(xPos, yPos);
-	std::cout << "x: " << xPos << " y: " << yPos << std::endl;
+	glfwManager = reinterpret_cast<GLFWManager *>(glfwGetWindowUserPointer(window));
+	glfwManager->setCursorPos(xPos, yPos);
 }
 
 void	GLFWManager::setCursorPos(double xPos, double yPos)
 {
-	this->_xPos = xPos;
-	this->_yPos = yPos;
+	this->_xPos = xPos / this->_width;
+	this->_yPos = yPos / this->_height;
+	std::cout << "x: " << _xPos << " y: " << _yPos << std::endl;
 }
 
 void	GLFWManager::run(void) {
@@ -31,6 +31,7 @@ void	GLFWManager::run(void) {
 
 	while (!glfwWindowShouldClose(this->_window))
 	{
+		this->_openCL->setPos(this->_xPos, this->_yPos);
 		this->_openCL->loop();
 		this->_openGL->draw();
 		glfwPollEvents();

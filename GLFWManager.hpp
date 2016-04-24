@@ -13,6 +13,7 @@ class GLFWManager {
 		GLFWManager &operator=(const GLFWManager &);
 		friend std::ostream &operator<< (std::ostream &, const GLFWManager &);
 		void		run(void);
+		void		setCursorPos(double xPos, double yPos);
 	private:
 		GLFWwindow	*_window;
 		int			_width;
@@ -23,6 +24,8 @@ class GLFWManager {
 		int			_frameBufferWidth;
 		int			_frameBufferHeight;
 		int			_nbParticles;
+		double		_xPos;
+		double		_yPos;
 };
 
 #endif
