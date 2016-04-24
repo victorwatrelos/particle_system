@@ -23,8 +23,13 @@ std::string     Task::getOptions() {
     return res;
 }
 
-cl_kernel       Task::getKernel() {
+cl_kernel       Task::getKernel(void) {
     return this->_kernel;
+}
+
+cl_int			Task::getMaxGid(void)
+{
+	return this->_maxGid;
 }
 
 std::string     *Task::getSrc(std::string filename) const {
@@ -73,6 +78,7 @@ void        Task::_createKernel(std::string filename, std::string kernelName)
     delete source;
 
 
+	std::cout << "options: " << options << std::endl;
     err = clBuildProgram(this->_program, 0, NULL, options.c_str(), NULL, NULL);
     if (err != CL_SUCCESS) {
         char    buildlog[16384];
@@ -83,12 +89,8 @@ void        Task::_createKernel(std::string filename, std::string kernelName)
         throw new OpenCLException();
     }
 
-    if (DEBUG_HOST) {
-        std::cout << "Compilation of " << filename << " with options: '" << options << "'" << std::endl;
-    }
-
     this->_kernel = clCreateKernel(this->_program, kernelName.c_str(), &err);
-    checkCLSuccess(err, "clCreateKernel");
+    checkCLSuccess(err, "clCreateKernel" + std::to_string(err));
 
     err = clGetKernelWorkGroupInfo(
         this->_kernel,
@@ -102,10 +104,11 @@ void        Task::_createKernel(std::string filename, std::string kernelName)
     this->_nbWorkGroup = this->_nbParticle / this->_localWorkSize + 1;
     this->_globalWorkSize = this->_nbWorkGroup * this->_localWorkSize;
     this->_maxGid = this->_nbParticle - 1;
-    if (DEBUG_HOST) {
-        std::cout << "max gid: " << this->_maxGid << std::endl;
-        std::cout << "Local work size: " << this->_localWorkSize << std::endl;
-        std::cout << "global work size: " << this->_globalWorkSize << std::endl;
-        std::cout << "nb work group: " << this->_nbWorkGroup << std::endl;
-    }
+
+	/*
+	std::cout << "max gid: " << this->_maxGid << std::endl;
+	std::cout << "Local work size: " << this->_localWorkSize << std::endl;
+	std::cout << "global work size: " << this->_globalWorkSize << std::endl;
+	std::cout << "nb work group: " << this->_nbWorkGroup << std::endl;
+	*/
 }

@@ -11,7 +11,7 @@
 class OpenGL {
 	public:
 		OpenGL (void);
-		OpenGL (int32_t width, int32_t height);
+		OpenGL (int32_t width, int32_t height, int32_t nbParticles);
 		OpenGL (const OpenGL &);
 		virtual ~OpenGL ( void );
 		OpenGL &operator=(const OpenGL &);
@@ -19,6 +19,7 @@ class OpenGL {
 
 		void		setDynUniform(void);
 		void		draw(void);
+		GLuint		getParticlesVBO(void);
 	private:
 		int32_t		_width;
 		int32_t		_height;

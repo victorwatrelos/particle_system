@@ -19,6 +19,7 @@ class Task {
         void                enqueueKernel(cl_command_queue queue);
         void                releaseKernel();
         void                setMaxGid(std::string maxGid);
+        cl_int				getMaxGid(void);
         std::string         getOptions();
     protected:
         void                                _createKernel(std::string filename, std::string kernelName);

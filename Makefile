@@ -7,6 +7,9 @@ SRC= main.cpp \
 	 GLFWManager.cpp \
 	 OpenGL.cpp \
 	 Matrix.cpp \
+	 OpenCL.cpp \
+	 TaskInitParticles.cpp \
+	 TaskApplyVel.cpp \
 	 Task.cpp
 
 OBJ= $(SRC:.cpp=.o)

@@ -1,12 +1,12 @@
 #include "OpenGL.hpp"
 
 OpenGL::OpenGL(void) 
-	: _width(640), _height(480) {
+	: _width(640), _height(480), _nbParticles(100000) {
 	this->_initOpenGL();
 }
 
-OpenGL::OpenGL(int width, int height) 
-	: _width(width), _height(height) {
+OpenGL::OpenGL(int32_t width, int32_t height, int32_t nbParticles) 
+	: _width(width), _height(height), _nbParticles(nbParticles) {
 	std::cout << "width: " << _width << " height: " << _height << std::endl;
 	this->_initOpenGL();
 }
@@ -34,18 +34,11 @@ std::string *OpenGL::_getSrc(std::string filename) const {
 void		OpenGL::_initBuffer(void)
 {
 	GLuint						attrloc;
-	GLfloat						lstPt[] =
-	{
-		3.1f, 2.1f, -5.1f,
-		0.0f, 0.0f, 6.f,
-		2.f, 3.f, -10.f,
-		2.f, 5.f, -7.f
-	};
 	GLfloat						mesh[] = 
 	{
-		-1.f, -1.f, -5.f,
-		1.f, -1.f, -5.f,
-		0.f, 1.f, -5.f
+		0.f, 0.f, 0.f,
+		0.f, 0.f, 0.f,
+		0.f, 0.f, 0.f
 	};
 	GLuint						elements[] =
 	{
@@ -53,7 +46,6 @@ void		OpenGL::_initBuffer(void)
 	};
 
 	std::cout << "init buffer" << std::endl;
-	this->_nbParticles = 3;
 	glGenVertexArrays(1, &(this->_vao));
 	glBindVertexArray(this->_vao);
 	glGenBuffers(3, this->_vbo);
@@ -69,7 +61,7 @@ void		OpenGL::_initBuffer(void)
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * 3, elements, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo[2]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 4 * 3, lstPt, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * this->_nbParticles, NULL, GL_STREAM_DRAW);
 	attrloc = glGetAttribLocation(this->_shader_program, "instancePosition");
 	glEnableVertexAttribArray(attrloc);
 	glVertexAttribPointer(attrloc, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -82,9 +74,8 @@ void		OpenGL::draw(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(this->_shader_program);
 	glBindVertexArray(this->_vao);
-	glDrawElementsInstanced(GL_POINTS, 3, GL_UNSIGNED_INT, 0, 4);
-	//glDrawArrays(GL_TRIANGLES, 0, 3);
-	//glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+	glDrawElementsInstanced(GL_POINTS, 3, GL_UNSIGNED_INT, 0, this->_nbParticles);
+	glFinish();
 }
 
 void		OpenGL::_setUniformLocation(void)
@@ -169,5 +160,10 @@ OpenGL &OpenGL::operator=(const OpenGL &src) {
 std::ostream &operator<<(std::ostream &stream, const OpenGL &obj) {
 	(void)obj;
 	return stream;
+}
+
+GLuint		OpenGL::getParticlesVBO(void)
+{
+	return this->_vbo[2];
 }
 

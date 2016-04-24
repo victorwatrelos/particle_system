@@ -6,13 +6,14 @@ static void		error_callback(int error, const char* description)
 }
 
 GLFWManager::GLFWManager( void ) 
-	: _width(640), _height(480) {
+	: _width(640), _height(480), _nbParticles(90000) {
 	this->_initGlfw();
 }
 
 void	GLFWManager::run(void) {
 	while (!glfwWindowShouldClose(this->_window))
 	{
+		this->_openCL->loop();
 		this->_openGL->draw();
 		glfwPollEvents();
 		glfwSwapBuffers(this->_window);
@@ -38,7 +39,8 @@ void	GLFWManager::_initGlfw(void)
 	glfwSetWindowUserPointer(this->_window, this);
 	glfwGetFramebufferSize(this->_window, &(this->_frameBufferWidth), &(this->_frameBufferHeight));
 	std::cout << "start opengl" << std::endl;
-	this->_openGL = new OpenGL(this->_frameBufferWidth, this->_frameBufferHeight);
+	this->_openGL = new OpenGL(this->_frameBufferWidth, this->_frameBufferHeight, this->_nbParticles);
+	this->_openCL = new OpenCL(this->_openGL->getParticlesVBO(), this->_nbParticles);
 }
 
 GLFWManager::GLFWManager (const GLFWManager &src) {

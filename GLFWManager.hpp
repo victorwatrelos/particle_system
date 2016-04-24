@@ -2,6 +2,7 @@
 # define __GLFW_MANAGER__HPP__
 
 # include "OpenGL.hpp"
+# include "OpenCL.hpp"
 # include <iostream>
 
 class GLFWManager {
@@ -18,8 +19,10 @@ class GLFWManager {
 		int			_height;
 		void		_initGlfw(void);
 		OpenGL		*_openGL;
+		OpenCL		*_openCL;
 		int			_frameBufferWidth;
 		int			_frameBufferHeight;
+		int			_nbParticles;
 };
 
 #endif
