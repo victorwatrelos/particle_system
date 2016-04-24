@@ -1,4 +1,6 @@
 #include "TaskApplyVel.hpp"
+#include <sstream>
+#include <iomanip>
 
 TaskApplyVel::TaskApplyVel (cl_context context, cl_device_id device, cl_int nbParticles)
 {
@@ -10,6 +12,21 @@ TaskApplyVel::TaskApplyVel (cl_context context, cl_device_id device, cl_int nbPa
 void		TaskApplyVel::createKernel()
 {
 	this->_createKernel("kernel/applyVel.cl", "applyVel");
+}
+std::string convert(float value)
+{
+	std::stringstream ss;
+	ss << std::setprecision(std::numeric_limits<float>::digits10+1);
+	ss << value;
+	return ss.str();
+}
+
+void		TaskApplyVel::setGravityDefine(double massPoint, double massParticles, double propConst)
+{
+	this->_defineOptions.insert(t_DefineOption("MASS_POINT", std::to_string(massPoint)));
+	this->_defineOptions.insert(t_DefineOption("MASS_PARTICLES", std::to_string(massParticles)));
+	this->_defineOptions.insert(t_DefineOption("G", convert(propConst)));
+	std::cout << "G: " << propConst << "dsd" << convert(propConst) << std::endl;
 }
 
 void		TaskApplyVel::setBoxSize(float x, float y, float z)

@@ -5,16 +5,22 @@ __kernel void	applyVel(__global float	*particles,
 	if (gid > MAX_GID)
 		return ;
 	int		start = gid * 3;
-	//int	startVel = gid * 4;
 	float3	particle;
-	float3 center = float3(-50.f, 10.f, -300.f);
+
+	float3 center = float3(0.0f, 0.f, -100.0f);
 	float3 vel = particlesVelocity[gid].xyz;
 	particle.x = particles[start];
 	particle.y = particles[start + 1];
 	particle.z = particles[start + 2];
-	float3 tmp = center - particle;
-	vel += (center - particle) * 0.001f;
-	//vel.z = 0.0f;
+
+	double3 tmp = convert_double3(center - particle);
+	double dist = distance(center, particle);
+	//printf("g: %e\n", g);
+	double fGravity = (G * MASS_POINT * MASS_PARTICLES) / (dist * dist);
+	//printf("fGravity: %e\n", fGravity);
+	tmp *= fGravity * 0.1;
+	//printf("fgravity: (%e * %e * %e / %e) = %e\n", G, MASS_POINT, MASS_PARTICLES, dist * dist, fGravity);
+	vel += convert_float3(tmp);
 	particlesVelocity[gid].xyz = vel;
 	//printf("tmp: %f, %f, %f   vel: %f %f %f particle: %f, %f, %f\n", tmp.x, tmp.y, tmp.z, vel.x, vel.y, vel.z, particle.x, particle.y, particle.z);
 	particle += vel;

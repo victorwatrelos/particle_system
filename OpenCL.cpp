@@ -2,8 +2,10 @@
 
 OpenCL::OpenCL( GLuint particlesVBO, int nbParticles)
 	: _nbParticles(nbParticles), _vbo(particlesVBO), _boxZ(5.0f) {
-		this->_boxX = sqrt(nbParticles);
-		this->_boxY = sqrt(nbParticles);
+		this->_boxX = //sqrt(nbParticles);
+		this->_boxY = //sqrt(nbParticles);
+		this->_boxX = 46.42f;
+		this->_boxY = this->_boxZ = 46.42f;
 	this->_initOpenCL();
 }
 
@@ -63,6 +65,7 @@ void	OpenCL::_initTask(void)
 	this->_taskApplyVel = new TaskApplyVel(this->_context, this->_device, this->_nbParticles);
 	this->_taskApplyVel->setMaxGid(std::to_string(this->_nbParticles));
 	this->_taskApplyVel->setBoxSize(this->_boxX, this->_boxY, this->_boxZ);
+	this->_taskApplyVel->setGravityDefine(1000000000.0, 100.0, 6.673E-11);
 	this->_taskApplyVel->createKernel();
 }
 

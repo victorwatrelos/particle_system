@@ -1,4 +1,5 @@
 #include "GLFWManager.hpp"
+#include <unistd.h>
 
 static void		error_callback(int error, const char* description)
 {
@@ -6,8 +7,23 @@ static void		error_callback(int error, const char* description)
 }
 
 GLFWManager::GLFWManager( void ) 
-	: _width(640), _height(480), _nbParticles(100) {
+	: _width(640), _height(480), _nbParticles(100000) {
 	this->_initGlfw();
+}
+
+static void cursorCallback(GLFWwindow* window, double xPos, double yPos)
+{
+	GLFWManager	*glfwManager;
+
+	GLFWmanager = reinterpret_cast<GLFWManager *>(glfwGetWindowUserPointer(window));
+	GLFWManager->setCursorPos(xPos, yPos);
+	std::cout << "x: " << xPos << " y: " << yPos << std::endl;
+}
+
+void	GLFWManager::setCursorPos(double xPos, double yPos)
+{
+	this->_xPos = xPos;
+	this->_yPos = yPos;
 }
 
 void	GLFWManager::run(void) {
@@ -20,7 +36,7 @@ void	GLFWManager::run(void) {
 		glfwPollEvents();
 		glfwSwapBuffers(this->_window);
 		(void)str;
-		read(0, str, 512);
+		//read(0, str, 512);
 	}
 }
 
@@ -41,6 +57,7 @@ void	GLFWManager::_initGlfw(void)
 	glfwMakeContextCurrent(this->_window);
 	glfwSwapInterval(1);
 	glfwSetWindowUserPointer(this->_window, this);
+	glfwSetCursorPosCallback(this->_window, cursorCallback);
 	glfwGetFramebufferSize(this->_window, &(this->_frameBufferWidth), &(this->_frameBufferHeight));
 	std::cout << "start opengl" << std::endl;
 	this->_openGL = new OpenGL(this->_frameBufferWidth, this->_frameBufferHeight, this->_nbParticles);

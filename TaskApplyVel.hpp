@@ -9,6 +9,7 @@ class TaskApplyVel : public Task {
 		TaskApplyVel(cl_context context, cl_device_id device, cl_int nbParticles);
 		void		createKernel(void);
 		void		setBoxSize(float x, float y, float z);
+		void		setGravityDefine(double massPoint, double massParticles, double propConst);
 };
 
 #endif
