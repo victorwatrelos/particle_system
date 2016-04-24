@@ -7,7 +7,7 @@ static void		error_callback(int error, const char* description)
 }
 
 GLFWManager::GLFWManager( void ) 
-	: _width(640), _height(480), _nbParticles(100000) {
+	: _width(800), _height(800), _nbParticles(100000) {
 	this->_initGlfw();
 }
 
@@ -23,7 +23,6 @@ void	GLFWManager::setCursorPos(double xPos, double yPos)
 {
 	this->_xPos = xPos / this->_width;
 	this->_yPos = yPos / this->_height;
-	std::cout << "x: " << _xPos << " y: " << _yPos << std::endl;
 }
 
 void	GLFWManager::run(void) {
