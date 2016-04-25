@@ -7,7 +7,7 @@ static void		error_callback(int error, const char* description)
 }
 
 GLFWManager::GLFWManager( void ) 
-	: _width(1500), _height(1000), _nbParticles(1000000) {
+	: _width(1500), _height(1000), _nbParticles(200000) {
 	this->_initGlfw();
 }
 

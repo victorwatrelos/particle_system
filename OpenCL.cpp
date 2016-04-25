@@ -33,11 +33,13 @@ void	OpenCL::_setKernelArg(void)
 
 void	OpenCL::setPos(double x, double y)
 {
+	x = std::abs(fmax(fmin(x, 1.f), 0.f));
+	y = 1.0 - std::abs(fmax(fmin(y, 1.f), 0.f));
 	this->_posX = x;
 	this->_posY = y;
 	float width = 900.f;
 	float height = 600.f;
-	printf("%f, %f = %f, %f, %f\n", x, y, x * width - width / 2.0f, y * height - height / 2.0f, -600.f);
+	//printf("%f, %f = %f, %f, %f\n", x, y, x * width - width / 2.0f, y * height - height / 2.0f, -600.f);
 }
 
 void	OpenCL::_setApplyVelArg(void)
@@ -82,7 +84,7 @@ void	OpenCL::_initTask(void)
 	this->_taskApplyVel = new TaskApplyVel(this->_context, this->_device, this->_nbParticles);
 	this->_taskApplyVel->setMaxGid(std::to_string(this->_nbParticles));
 	this->_taskApplyVel->setBoxSize(this->_boxX, this->_boxY, this->_boxZ);
-	this->_taskApplyVel->setGravityDefine(5.9E10, 1.0E3, 6.673E-11);
+	this->_taskApplyVel->setGravityDefine(5.9E12, 1.0E1, 6.673E-11);
 	this->_taskApplyVel->createKernel();
 }
 
@@ -90,15 +92,17 @@ void	OpenCL::loop(void)
 {
 	cl_kernel	kernel;
 
+	clEnqueueAcquireGLObjects(this->_commandQueue, 1, &(this->_particlesVBO), 0, NULL, NULL);
 	kernel = this->_taskApplyVel->getKernel();
 
-	checkCLSuccess(clSetKernelArg(kernel, 2, sizeof(cl_double),
+	checkCLSuccess(clSetKernelArg(kernel, 2, sizeof(cl_float),
 				&this->_posX),
 			"clSetKernelArg setApplyVelArg 2");
-	checkCLSuccess(clSetKernelArg(kernel, 3, sizeof(cl_double),
+	checkCLSuccess(clSetKernelArg(kernel, 3, sizeof(cl_float),
 				&this->_posY),
 			"clSetKernelArg setApplyVelArg 3");
 	this->_taskApplyVel->enqueueKernel(this->_commandQueue);
+	clEnqueueReleaseGLObjects(this->_commandQueue, 1, &(this->_particlesVBO), 0, NULL, NULL);
 	clFinish(this->_commandQueue);
 }
 

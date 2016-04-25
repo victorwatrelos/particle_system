@@ -71,6 +71,7 @@ void		OpenGL::_initBuffer(void)
 
 void		OpenGL::draw(void)
 {
+	this->setDynUniform();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(this->_shader_program);
 	glBindVertexArray(this->_vao);
@@ -81,6 +82,7 @@ void		OpenGL::draw(void)
 void		OpenGL::_setUniformLocation(void)
 {
 	this->_uloc_P = glGetUniformLocation(this->_shader_program, "P");
+	this->_uloc_R = glGetUniformLocation(this->_shader_program, "R");
 }
 
 void		OpenGL::_setStaticUniform(void)
@@ -94,6 +96,15 @@ void		OpenGL::_setStaticUniform(void)
 
 void		OpenGL::setDynUniform(void)
 {
+	GLfloat		*rot_matrix;
+	static float	alpha = 0.0f * M_PI;
+
+	//alpha += 0.01f;
+	if (alpha > 2.f * M_PI)
+		alpha -= 2.f * M_PI;
+	rot_matrix = Matrix::get_rot_m(alpha);
+	glUniformMatrix4fv(this->_uloc_R, 1, GL_FALSE, rot_matrix);
+	delete rot_matrix;
 }
 
 void		OpenGL::_initShader(void)

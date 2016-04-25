@@ -1,8 +1,8 @@
 #include "Task.hpp"
 
 Task::Task(void) {
-    this->_buildOptions.push_back("-cl-mad-enable");
-    this->_buildOptions.push_back("-cl-fast-relaxed-math");
+  //  this->_buildOptions.push_back("-cl-mad-enable");
+ //   this->_buildOptions.push_back("-cl-fast-relaxed-math");
     this->_buildOptions.push_back("-Werror");
     //this->_defineOptions.insert(t_DefineOption("RANGE", "1.5f"));
 }

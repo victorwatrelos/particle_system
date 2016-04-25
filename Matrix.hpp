@@ -9,6 +9,7 @@ namespace Matrix
 {
 	GLfloat		*get_identity(void);
 	GLfloat		*get_projection(GLfloat fovy, GLfloat aspect, GLfloat near, GLfloat far);
+	GLfloat		*get_rot_m(float alpha);
 }
 
 #endif

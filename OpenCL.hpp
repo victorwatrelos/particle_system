@@ -49,8 +49,8 @@ class OpenCL {
 		float				_boxX;
 		float				_boxY;
 		float				_boxZ;
-		double				_posX;
-		double				_posY;
+		float				_posX;
+		float				_posY;
 
 };
 

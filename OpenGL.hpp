@@ -30,6 +30,7 @@ class OpenGL {
 		GLuint		_vao;
 		GLuint		_shader_program;
 		GLint		_uloc_P;
+		GLint		_uloc_R;
 
 		void			_initOpenGL(void);
 		void			_initShader(void);
