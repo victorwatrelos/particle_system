@@ -7,7 +7,7 @@ static void		error_callback(int error, const char* description)
 }
 
 GLFWManager::GLFWManager( void ) 
-	: _width(800), _height(800), _nbParticles(100000) {
+	: _width(1500), _height(1000), _nbParticles(1000000) {
 	this->_initGlfw();
 }
 
@@ -25,18 +25,39 @@ void	GLFWManager::setCursorPos(double xPos, double yPos)
 	this->_yPos = yPos / this->_height;
 }
 
+void	GLFWManager::_tick(void)
+{
+	struct timeval	time;
+	int64_t			tmpTime;
+
+	gettimeofday(&time, NULL);
+	tmpTime = time.tv_sec * 1000000 + time.tv_usec;
+	if (tmpTime - this->_time > 1000000)
+	{
+		this->_time = tmpTime;
+		std::cout << "FPS: " << this->_nbFrame << std::endl;
+		this->_nbFrame = 0;
+	}
+	this->_nbFrame++;
+
+}
+
 void	GLFWManager::run(void) {
 	char	str[512];
 
+	this->_nbFrame = 0;
+	this->_openGL->draw();
+	glfwSwapBuffers(this->_window);
 	while (!glfwWindowShouldClose(this->_window))
 	{
+		//read(0, &str, 512);
 		this->_openCL->setPos(this->_xPos, this->_yPos);
 		this->_openCL->loop();
 		this->_openGL->draw();
 		glfwPollEvents();
 		glfwSwapBuffers(this->_window);
+		this->_tick();
 		(void)str;
-		//read(0, str, 512);
 	}
 }
 

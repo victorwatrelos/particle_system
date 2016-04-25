@@ -25,7 +25,7 @@ void		TaskApplyVel::setGravityDefine(double massPoint, double massParticles, dou
 {
 	this->_defineOptions.insert(t_DefineOption("MASS_POINT", std::to_string(massPoint)));
 	this->_defineOptions.insert(t_DefineOption("MASS_PARTICLES", std::to_string(massParticles)));
-	this->_defineOptions.insert(t_DefineOption("G", convert(propConst)));
+	this->_defineOptions.insert(t_DefineOption("G_CONST", convert(propConst)));
 	std::cout << "G: " << propConst << "dsd" << convert(propConst) << std::endl;
 }
 

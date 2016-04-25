@@ -87,7 +87,7 @@ void		OpenGL::_setStaticUniform(void)
 {
 	GLfloat		*proj_matrix;
 
-	proj_matrix = Matrix::get_projection(45, this->_width / this->_height, 0.1, 1000);
+	proj_matrix = Matrix::get_projection(45, this->_width / this->_height, 0.1, 10000);
 	glUniformMatrix4fv(this->_uloc_P, 1, GL_FALSE, proj_matrix);
 	delete proj_matrix;
 }

@@ -4,6 +4,7 @@
 # include "OpenGL.hpp"
 # include "OpenCL.hpp"
 # include <iostream>
+# include <sys/time.h>
 
 class GLFWManager {
 	public:
@@ -15,10 +16,12 @@ class GLFWManager {
 		void		run(void);
 		void		setCursorPos(double xPos, double yPos);
 	private:
+		void		_initGlfw(void);
+		void		_tick(void);
+
 		GLFWwindow	*_window;
 		int			_width;
 		int			_height;
-		void		_initGlfw(void);
 		OpenGL		*_openGL;
 		OpenCL		*_openCL;
 		int			_frameBufferWidth;
@@ -26,6 +29,8 @@ class GLFWManager {
 		int			_nbParticles;
 		double		_xPos;
 		double		_yPos;
+		int			_nbFrame;
+		int64_t		_time;
 };
 
 #endif
