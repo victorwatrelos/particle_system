@@ -8,7 +8,7 @@
 # include "Task.hpp"
 # include "TaskInitParticles.hpp"
 # include "TaskApplyVel.hpp"
-# define PARTICLES_PER_WORK_ITEM 128
+# define PARTICLES_PER_WORK_ITEM 1
 
 class OpenCL {
 	public:

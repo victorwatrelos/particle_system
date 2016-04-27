@@ -34,14 +34,6 @@ std::string *OpenGL::_getSrc(std::string filename) const {
 void		OpenGL::_initBuffer(void)
 {
 	GLuint						attrloc;
-	GLfloat						mesh[] = 
-	{
-		0.f, 0.f, 0.f
-	};
-	GLuint						elements[] =
-	{
-		0
-	};
 
 	std::cout << "init buffer" << std::endl;
 	glGenVertexArrays(1, &(this->_vao));

@@ -5,41 +5,24 @@ __kernel void	applyVel(__global float	*particles,
 	int		gid = get_global_id(0);
 	if (gid > MAX_GID)
 		return ;
-	gid *= NB_PARTICLES_PER_WORK_ITEM;
-	int		i;
 	int		start;
 	float3	center;
-	double	dist;
-	double3	tmp;
+	float	dist;
 	float3	particle;
 
-	i = 0;
-	while (i < NB_PARTICLES_PER_WORK_ITEM && gid < NB_PARTICLES)
-	{
-		i++;
-		start = gid * 3;
-
-		float3 vel = particlesVelocity[gid].xyz;
-
-		particle.x = particles[start];
-		particle.y = particles[start + 1];
-		particle.z = particles[start + 2];
-
-		center = (float3)(centerX, centerY, 0.f);
-		dist = distance(center, particle);
-		if (dist < 1.0)
-		{
-			gid++;
-			continue ;
-		}
-		tmp = convert_double3(center - particle) * ((DIVIDEND) / (pown(dist, 2)));
-		vel += convert_float3(tmp);
-		particlesVelocity[gid].xyz = vel;
-		particle += vel;
-
-		particles[start] = particle.x;
-		particles[start + 1] = particle.y;
-		particles[start + 2] = particle.z;
-		gid++;
-	}
+	start = gid * 3;
+	float3 vel = particlesVelocity[gid].xyz;
+	particle.x = particles[start];
+	particle.y = particles[start + 1];
+	particle.z = particles[start + 2];
+	center = (float3)(centerX, centerY, 0.f);
+	dist = distance(center, particle);
+	if (dist < 1.0)
+		return ;
+	vel += (center - particle) * (((float)(DIVIDEND)) / (pown(dist, 2)));
+	particlesVelocity[gid].xyz = vel;
+	particle += vel;
+	particles[start] = particle.x;
+	particles[start + 1] = particle.y;
+	particles[start + 2] = particle.z;
 }
