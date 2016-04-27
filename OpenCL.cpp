@@ -38,15 +38,20 @@ void	OpenCL::setPos(double x, double y)
 	y = 1.0 - std::abs(fmax(fmin(y, 1.f), 0.f));
 	this->_posX = x;
 	this->_posY = y;
-	float width = 900.f;
-	float height = 600.f;
-	//printf("%f, %f = %f, %f, %f\n", x, y, x * width - width / 2.0f, y * height - height / 2.0f, -600.f);
+	this->_setDynApplyVelArg();
 }
 
 void	OpenCL::_setApplyVelArg(void)
 {
 	cl_kernel	kernel = this->_taskApplyVel->getKernel();
+	float		width, height;
 
+	width = 1350.f;
+	height = width * 1.f;
+	cl_float	x, y;
+
+	x = this->_posX * width - width / 2.0f;
+	y = this->_posY * height - height/ 2.0f;
 	checkCLSuccess(clSetKernelArg(kernel, 0, sizeof(cl_mem),
 				&this->_particlesVBO),
 			"clSetKernelArg setApplyVelArg 0");
@@ -54,11 +59,30 @@ void	OpenCL::_setApplyVelArg(void)
 	checkCLSuccess(clSetKernelArg(kernel, 1, sizeof(cl_mem),
 				&this->_particlesVelocity),
 			"clSetKernelArg setApplyVelArg 1");
-	checkCLSuccess(clSetKernelArg(kernel, 2, sizeof(cl_double),
-				&this->_posX),
+	checkCLSuccess(clSetKernelArg(kernel, 2, sizeof(cl_float),
+				&x),
 			"clSetKernelArg setApplyVelArg 2");
-	checkCLSuccess(clSetKernelArg(kernel, 3, sizeof(cl_double),
-				&this->_posY),
+	checkCLSuccess(clSetKernelArg(kernel, 3, sizeof(cl_float),
+				&y),
+			"clSetKernelArg setApplyVelArg 3");
+}
+
+void	OpenCL::_setDynApplyVelArg(void)
+{
+	float		width, height;
+	cl_kernel	kernel = this->_taskApplyVel->getKernel();
+
+	width = 1350.f;
+	height = width * 1.f;
+	cl_float	x, y;
+
+	x = this->_posX * width - width / 2.0f;
+	y = this->_posY * height - height/ 2.0f;
+	checkCLSuccess(clSetKernelArg(kernel, 2, sizeof(cl_float),
+				&x),
+			"clSetKernelArg setApplyVelArg 2");
+	checkCLSuccess(clSetKernelArg(kernel, 3, sizeof(cl_float),
+				&y),
 			"clSetKernelArg setApplyVelArg 3");
 }
 
@@ -101,12 +125,6 @@ void	OpenCL::loop(void)
 	clEnqueueAcquireGLObjects(this->_commandQueue, 1, &(this->_particlesVBO), 0, NULL, NULL);
 	kernel = this->_taskApplyVel->getKernel();
 
-	checkCLSuccess(clSetKernelArg(kernel, 2, sizeof(cl_float),
-				&this->_posX),
-			"clSetKernelArg setApplyVelArg 2");
-	checkCLSuccess(clSetKernelArg(kernel, 3, sizeof(cl_float),
-				&this->_posY),
-			"clSetKernelArg setApplyVelArg 3");
 	this->_taskApplyVel->enqueueKernel(this->_commandQueue);
 	clEnqueueReleaseGLObjects(this->_commandQueue, 1, &(this->_particlesVBO), 0, NULL, NULL);
 	clFinish(this->_commandQueue);

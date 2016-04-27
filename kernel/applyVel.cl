@@ -1,6 +1,6 @@
 __kernel void	applyVel(__global float	*particles,
 							__global float4	*particlesVelocity,
-							float posX, float posY)
+							float centerX, float centerY)
 {
 	int		gid = get_global_id(0);
 	if (gid > MAX_GID)
@@ -8,7 +8,6 @@ __kernel void	applyVel(__global float	*particles,
 	gid *= NB_PARTICLES_PER_WORK_ITEM;
 	int		i;
 	int		start;
-	float	width, height;
 	float3	center;
 	double	dist;
 	double3	tmp;
@@ -27,18 +26,13 @@ __kernel void	applyVel(__global float	*particles,
 		particle.y = particles[start + 1];
 		particle.z = particles[start + 2];
 
-		(void)(vel);
-		width = 1350.f;
-		height = width * 1.f;
-		center = (float3)(posX * width - width / 2.0f, posY * height - height / 2.0f, 0.f);
+		center = (float3)(centerX, centerY, 0.f);
 		dist = distance(center, particle);
 		if (dist < 1.0)
 		{
 			gid++;
 			continue ;
 		}
-
-		(void)tmp;
 		tmp = convert_double3(center - particle);
 		fGravity = (G_CONST * MASS_POINT * MASS_PARTICLES) / (dist * dist);
 

@@ -34,6 +34,7 @@ class OpenCL {
 		void	_setKernelArg(void);
 		void	_setInitParticlesArg(void);
 		void	_setApplyVelArg(void);
+		void	_setDynApplyVelArg(void);
 
 		cl_context			_context;
 		cl_int				_nbDevices;
