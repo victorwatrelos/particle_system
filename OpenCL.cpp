@@ -44,14 +44,7 @@ void	OpenCL::setPos(double x, double y)
 void	OpenCL::_setApplyVelArg(void)
 {
 	cl_kernel	kernel = this->_taskApplyVel->getKernel();
-	float		width, height;
 
-	width = 1350.f;
-	height = width * 1.f;
-	cl_float	x, y;
-
-	x = this->_posX * width - width / 2.0f;
-	y = this->_posY * height - height/ 2.0f;
 	checkCLSuccess(clSetKernelArg(kernel, 0, sizeof(cl_mem),
 				&this->_particlesVBO),
 			"clSetKernelArg setApplyVelArg 0");
@@ -59,12 +52,7 @@ void	OpenCL::_setApplyVelArg(void)
 	checkCLSuccess(clSetKernelArg(kernel, 1, sizeof(cl_mem),
 				&this->_particlesVelocity),
 			"clSetKernelArg setApplyVelArg 1");
-	checkCLSuccess(clSetKernelArg(kernel, 2, sizeof(cl_float),
-				&x),
-			"clSetKernelArg setApplyVelArg 2");
-	checkCLSuccess(clSetKernelArg(kernel, 3, sizeof(cl_float),
-				&y),
-			"clSetKernelArg setApplyVelArg 3");
+	this->_setDynApplyVelArg();
 }
 
 void	OpenCL::_setDynApplyVelArg(void)
@@ -72,7 +60,7 @@ void	OpenCL::_setDynApplyVelArg(void)
 	float		width, height;
 	cl_kernel	kernel = this->_taskApplyVel->getKernel();
 
-	width = 1350.f;
+	width = 10000.f;
 	height = width * 1.f;
 	cl_float	x, y;
 

@@ -7,7 +7,6 @@ OpenGL::OpenGL(void)
 
 OpenGL::OpenGL(int32_t width, int32_t height, int32_t nbParticles) 
 	: _width(width), _height(height), _nbParticles(nbParticles) {
-	std::cout << "width: " << _width << " height: " << _height << std::endl;
 	this->_initOpenGL();
 }
 
@@ -69,7 +68,7 @@ void		OpenGL::_setStaticUniform(void)
 {
 	GLfloat		*proj_matrix;
 
-	proj_matrix = Matrix::get_projection(45, this->_width / this->_height, 0.1, 10000);
+	proj_matrix = Matrix::get_projection(45, this->_width / this->_height, 0.1, 20000);
 	glUniformMatrix4fv(this->_uloc_P, 1, GL_FALSE, proj_matrix);
 	delete proj_matrix;
 }

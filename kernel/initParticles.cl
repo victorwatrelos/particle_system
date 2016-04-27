@@ -12,5 +12,4 @@ __kernel void	initParticles(__global float	*particles,
 	particlesVelocity[startVel] = 0.f;
 	particlesVelocity[startVel + 1] = 0.f;
 	particlesVelocity[startVel + 2] = 0.f;
-	particlesVelocity[startVel + 3] = 1.f;
 }

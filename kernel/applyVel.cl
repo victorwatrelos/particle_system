@@ -5,11 +5,9 @@ __kernel void	applyVel(__global float3 *particles,
 	int		gid = get_global_id(0);
 	if (gid > MAX_GID)
 		return ;
-	int		start;
 	float3	center;
 	float	dist;
 
-	start = gid * 4;
 	float3	vel = particlesVelocity[gid];
 	float3	particle = particles[gid];
 	center = (float3)(centerX, centerY, 0.f);
