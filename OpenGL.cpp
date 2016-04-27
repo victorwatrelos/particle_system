@@ -42,9 +42,9 @@ void		OpenGL::_initBuffer(void)
 
 
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * this->_nbParticles, NULL, GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 4 * this->_nbParticles, NULL, GL_STREAM_DRAW);
 	attrloc = glGetAttribLocation(this->_shader_program, "in_Position");
-	glVertexAttribPointer(attrloc, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glVertexAttribPointer(attrloc, 4, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(attrloc);
 	glBindVertexArray(0);
 }
