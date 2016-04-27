@@ -36,36 +36,24 @@ void		OpenGL::_initBuffer(void)
 	GLuint						attrloc;
 	GLfloat						mesh[] = 
 	{
-		0.f, 0.f, 0.f,
-		0.f, 0.f, 0.f,
 		0.f, 0.f, 0.f
 	};
 	GLuint						elements[] =
 	{
-		0, 1, 2
+		0
 	};
 
 	std::cout << "init buffer" << std::endl;
 	glGenVertexArrays(1, &(this->_vao));
 	glBindVertexArray(this->_vao);
-	glGenBuffers(3, this->_vbo);
+	glGenBuffers(1, this->_vbo);
 
 
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 9, mesh, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * this->_nbParticles, NULL, GL_STREAM_DRAW);
 	attrloc = glGetAttribLocation(this->_shader_program, "in_Position");
 	glVertexAttribPointer(attrloc, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(attrloc);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->_vbo[1]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * 3, elements, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo[2]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 3 * this->_nbParticles, NULL, GL_STREAM_DRAW);
-	attrloc = glGetAttribLocation(this->_shader_program, "instancePosition");
-	glEnableVertexAttribArray(attrloc);
-	glVertexAttribPointer(attrloc, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glVertexAttribDivisor(attrloc, 1);
 	glBindVertexArray(0);
 }
 
@@ -75,7 +63,7 @@ void		OpenGL::draw(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glUseProgram(this->_shader_program);
 	glBindVertexArray(this->_vao);
-	glDrawElementsInstanced(GL_POINTS, 3, GL_UNSIGNED_INT, 0, this->_nbParticles);
+	glDrawArrays(GL_POINTS, 0, this->_nbParticles);
 	glFinish();
 }
 
@@ -175,6 +163,6 @@ std::ostream &operator<<(std::ostream &stream, const OpenGL &obj) {
 
 GLuint		OpenGL::getParticlesVBO(void)
 {
-	return this->_vbo[2];
+	return this->_vbo[OPENCL_VBO];
 }
 

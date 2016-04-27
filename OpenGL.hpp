@@ -7,6 +7,7 @@
 # include "OpenGLInc.hpp"
 # include "OpenGLException.hpp"
 # include "Matrix.hpp"
+# define OPENCL_VBO 0
 
 class OpenGL {
 	public:
