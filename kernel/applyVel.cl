@@ -11,7 +11,6 @@ __kernel void	applyVel(__global float	*particles,
 	float3	center;
 	double	dist;
 	double3	tmp;
-	double	fGravity;
 	float3	particle;
 
 	i = 0;
@@ -33,10 +32,7 @@ __kernel void	applyVel(__global float	*particles,
 			gid++;
 			continue ;
 		}
-		tmp = convert_double3(center - particle);
-		fGravity = (G_CONST * MASS_POINT * MASS_PARTICLES) / (dist * dist);
-
-		tmp *= fGravity;
+		tmp = convert_double3(center - particle) * ((DIVIDEND) / (pown(dist, 2)));
 		vel += convert_float3(tmp);
 		particlesVelocity[gid].xyz = vel;
 		particle += vel;
