@@ -21,6 +21,7 @@ class Task {
         void                setMaxGid(std::string maxGid);
         cl_int				getMaxGid(void);
         std::string         getOptions();
+		void				setNbPerWorkItem(int nbP);
     protected:
         void                                _createKernel(std::string filename, std::string kernelName);
         cl_kernel                           _kernel;

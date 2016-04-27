@@ -99,7 +99,7 @@ void		OpenGL::setDynUniform(void)
 	GLfloat		*rot_matrix;
 	static float	alpha = 0.0f * M_PI;
 
-	//alpha += 0.01f;
+	//alpha += 0.005f;
 	if (alpha > 2.f * M_PI)
 		alpha -= 2.f * M_PI;
 	rot_matrix = Matrix::get_rot_m(alpha);

@@ -7,7 +7,7 @@ static void		error_callback(int error, const char* description)
 }
 
 GLFWManager::GLFWManager( void ) 
-	: _width(1500), _height(1000), _nbParticles(200000) {
+	: _width(1500), _height(1000), _nbParticles(1000000) {
 	this->_initGlfw();
 }
 
@@ -35,7 +35,10 @@ void	GLFWManager::_tick(void)
 	if (tmpTime - this->_time > 1000000)
 	{
 		this->_time = tmpTime;
-		std::cout << "FPS: " << this->_nbFrame << std::endl;
+		std::cout << "FPS:\t\t" << this->_nbFrame << std::endl;
+		std::cout << "OpenCL av:\t" << this->_timerOpenCL.getMsFloatAverage() << "ms" << std::endl;
+		std::cout << "OpenGL av:\t" << this->_timerOpenGL.getMsFloatAverage() << "ms" << std::endl;
+		std::cout << "Total av:\t" << this->_timerTotal.getMsFloatAverage() << "ms" << std::endl;
 		this->_nbFrame = 0;
 	}
 	this->_nbFrame++;
@@ -50,12 +53,17 @@ void	GLFWManager::run(void) {
 	glfwSwapBuffers(this->_window);
 	while (!glfwWindowShouldClose(this->_window))
 	{
-		//read(0, &str, 512);
+		this->_timerOpenCL.start();
+		this->_timerTotal.start();
 		this->_openCL->setPos(this->_xPos, this->_yPos);
 		this->_openCL->loop();
+		this->_timerOpenCL.stop();
+		this->_timerOpenGL.start();
 		this->_openGL->draw();
+		this->_timerOpenGL.stop();
 		glfwPollEvents();
 		glfwSwapBuffers(this->_window);
+		this->_timerTotal.stop();
 		this->_tick();
 		(void)str;
 	}

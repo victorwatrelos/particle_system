@@ -14,6 +14,7 @@ void	OpenCL::_initOpenCL(void)
 	this->_posX = 0.5f;
 	this->_posY = 0.5f;
 	this->_createContext();
+	this->_getDeviceInfo();
 	this->_bindBuffer();
 	this->_bindVBOBuffer();
 	this->_initTask();
@@ -76,15 +77,20 @@ void	OpenCL::_setInitParticlesArg(void)
 
 void	OpenCL::_initTask(void)
 {
+	int		gid;
+
+	gid = this->_nbParticles / PARTICLES_PER_WORK_ITEM;
 	this->_taskInitParticles = new TaskInitParticles(this->_context, this->_device, this->_nbParticles);
 	this->_taskInitParticles->setMaxGid(std::to_string(this->_nbParticles));
 	this->_taskInitParticles->setBoxSize(this->_boxX, this->_boxY, this->_boxZ);
 	this->_taskInitParticles->createKernel();
 
 	this->_taskApplyVel = new TaskApplyVel(this->_context, this->_device, this->_nbParticles);
-	this->_taskApplyVel->setMaxGid(std::to_string(this->_nbParticles));
+	this->_taskApplyVel->setMaxGid(std::to_string(gid));
 	this->_taskApplyVel->setBoxSize(this->_boxX, this->_boxY, this->_boxZ);
-	this->_taskApplyVel->setGravityDefine(5.9E12, 1.0E1, 6.673E-11);
+	this->_taskApplyVel->setGravityDefine(5.9E13, 1.0E1, 6.673E-11);
+	this->_taskApplyVel->setNbPerWorkItem(PARTICLES_PER_WORK_ITEM);
+	this->_taskApplyVel->setNbParticles(this->_nbParticles);
 	this->_taskApplyVel->createKernel();
 }
 
@@ -146,6 +152,15 @@ void    OpenCL::_getDeviceInfo() {
         std::cout << this->_maxWorkItemSize[i] << ", ";
     }
     std::cout << ")" << std::endl;
+
+    checkCLSuccess(clGetDeviceInfo(this->_device,
+                CL_DEVICE_MAX_COMPUTE_UNITS,
+                sizeof(cl_uint),
+                &(this->_maxComputeUnit),
+                NULL),
+            "clGetDeviceInfo max compute units");
+	std::cout << "Max device compute unit: " << this->_maxComputeUnit << std::endl;
+
 
 }
 

@@ -8,6 +8,7 @@
 # include "Task.hpp"
 # include "TaskInitParticles.hpp"
 # include "TaskApplyVel.hpp"
+# define PARTICLES_PER_WORK_ITEM 128
 
 class OpenCL {
 	public:
@@ -51,6 +52,7 @@ class OpenCL {
 		float				_boxZ;
 		float				_posX;
 		float				_posY;
+		cl_uint				_maxComputeUnit;
 
 };
 

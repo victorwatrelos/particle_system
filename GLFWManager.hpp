@@ -5,6 +5,7 @@
 # include "OpenCL.hpp"
 # include <iostream>
 # include <sys/time.h>
+# include "Timer.hpp"
 
 class GLFWManager {
 	public:
@@ -30,6 +31,9 @@ class GLFWManager {
 		double		_xPos;
 		double		_yPos;
 		int			_nbFrame;
+		Timer		_timerOpenCL;
+		Timer		_timerOpenGL;
+		Timer		_timerTotal;
 		int64_t		_time;
 };
 

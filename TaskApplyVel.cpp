@@ -21,6 +21,11 @@ std::string convert(float value)
 	return ss.str();
 }
 
+void		TaskApplyVel::setNbParticles(int nbParticles)
+{
+	this->_defineOptions.insert(t_DefineOption("NB_PARTICLES", std::to_string(nbParticles)));
+}
+
 void		TaskApplyVel::setGravityDefine(double massPoint, double massParticles, double propConst)
 {
 	this->_defineOptions.insert(t_DefineOption("MASS_POINT", std::to_string(massPoint)));

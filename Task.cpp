@@ -11,6 +11,11 @@ void            Task::setMaxGid(std::string maxGid) {
     this->_defineOptions.insert(t_DefineOption("MAX_GID", maxGid));
 }
 
+void			Task::setNbPerWorkItem(int nbP)
+{
+	this->_defineOptions.insert(t_DefineOption("NB_PARTICLES_PER_WORK_ITEM", std::to_string(nbP)));
+}
+
 std::string     Task::getOptions() {
     std::string res = "";
 

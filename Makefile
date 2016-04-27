@@ -10,6 +10,7 @@ SRC= main.cpp \
 	 OpenCL.cpp \
 	 TaskInitParticles.cpp \
 	 TaskApplyVel.cpp \
+	 Timer.cpp \
 	 Task.cpp
 
 OBJ= $(SRC:.cpp=.o)
