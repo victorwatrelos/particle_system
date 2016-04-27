@@ -35,6 +35,7 @@ void	GLFWManager::_tick(void)
 	if (tmpTime - this->_time > 1000000)
 	{
 		this->_time = tmpTime;
+		glfwSetWindowTitle(this->_window, std::to_string(this->_nbFrame).c_str());
 		std::cout << "FPS:\t\t" << this->_nbFrame << std::endl;
 		std::cout << "OpenCL av:\t" << this->_timerOpenCL.getMsFloatAverage() << "ms" << std::endl;
 		std::cout << "OpenGL av:\t" << this->_timerOpenGL.getMsFloatAverage() << "ms" << std::endl;
