@@ -12,12 +12,14 @@
 
 class OpenCL {
 	public:
-		OpenCL(GLuint particlesVBO, int nbParticles);
+		OpenCL(GLuint particlesVBO, GLuint particlesColorVBO, int nbParticles, float ratio);
 		OpenCL (const OpenCL &);
 		virtual ~OpenCL ( void );
 		static void		checkCLSuccess(cl_int errNum, std::string name);
 		void			loop(void);
 		void			setPos(double x, double y);
+		void			setBorderSize(float size);
+		void			initParticles(void);
 
 		OpenCL &operator=(const OpenCL &);
 		friend std::ostream &operator<< (std::ostream &, const OpenCL &);
@@ -35,6 +37,8 @@ class OpenCL {
 		void	_setInitParticlesArg(void);
 		void	_setApplyVelArg(void);
 		void	_setDynApplyVelArg(void);
+		void	_acquireGLObject(void);
+		void	_releaseGLObject(void);
 
 		cl_context			_context;
 		cl_int				_nbDevices;
@@ -43,9 +47,11 @@ class OpenCL {
 		size_t				*_maxWorkItemSize;
 		cl_mem				_particlesVelocity;
 		cl_mem				_particlesVBO;
+		cl_mem				_particlesColorVBO;
 		cl_command_queue	_commandQueue;
 		int					_nbParticles;
 		GLuint				_vbo;
+		GLuint				_colorVBO;
 		TaskInitParticles	*_taskInitParticles;
 		TaskApplyVel		*_taskApplyVel;
 		float				_boxX;
@@ -54,6 +60,8 @@ class OpenCL {
 		float				_posX;
 		float				_posY;
 		cl_uint				_maxComputeUnit;
+		float				_ratio;
+		float				_borderSize = 30000.f;
 
 };
 

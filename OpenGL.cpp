@@ -5,9 +5,15 @@ OpenGL::OpenGL(void)
 	this->_initOpenGL();
 }
 
-OpenGL::OpenGL(int32_t width, int32_t height, int32_t nbParticles) 
-	: _width(width), _height(height), _nbParticles(nbParticles) {
+OpenGL::OpenGL(int32_t width, int32_t height, int32_t nbParticles, float borderSize) 
+	: _width(width), _height(height), _nbParticles(nbParticles), _borderSize(borderSize) {
 	this->_initOpenGL();
+}
+
+void	OpenGL::setBorderSize(float borderSize)
+{
+	this->_borderSize = borderSize;
+	this->_setTrans();
 }
 
 void	OpenGL::_initOpenGL(void) {
@@ -21,6 +27,7 @@ void	OpenGL::_initOpenGL(void) {
 	glUseProgram(this->_shader_program);
 	this->_setUniformLocation();
 	this->_setStaticUniform();
+	this->_setTrans();
 }
 
 std::string *OpenGL::_getSrc(std::string filename) const {
@@ -37,13 +44,19 @@ void		OpenGL::_initBuffer(void)
 	std::cout << "init buffer" << std::endl;
 	glGenVertexArrays(1, &(this->_vao));
 	glBindVertexArray(this->_vao);
-	glGenBuffers(1, this->_vbo);
+	glGenBuffers(2, this->_vbo);
 
 
 	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 4 * this->_nbParticles, NULL, GL_STREAM_DRAW);
 	attrloc = glGetAttribLocation(this->_shader_program, "in_Position");
 	glVertexAttribPointer(attrloc, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(attrloc);
+
+	glBindBuffer(GL_ARRAY_BUFFER, this->_vbo[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 1 * this->_nbParticles, NULL, GL_STREAM_DRAW);
+	attrloc = glGetAttribLocation(this->_shader_program, "in_Dist");
+	glVertexAttribPointer(attrloc, 1, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(attrloc);
 	glBindVertexArray(0);
 }
@@ -58,17 +71,23 @@ void		OpenGL::draw(void)
 	glFinish();
 }
 
+void		OpenGL::_setTrans(void)
+{
+	glUniform4f(this->_uloc_T, 0.f, 0.f, -this->_borderSize, 0.f);
+}
+
 void		OpenGL::_setUniformLocation(void)
 {
 	this->_uloc_P = glGetUniformLocation(this->_shader_program, "P");
 	this->_uloc_R = glGetUniformLocation(this->_shader_program, "R");
+	this->_uloc_T = glGetUniformLocation(this->_shader_program, "T");
 }
 
 void		OpenGL::_setStaticUniform(void)
 {
 	GLfloat		*proj_matrix;
 
-	proj_matrix = Matrix::get_projection(45, this->_width / this->_height, 0.1, 20000);
+	proj_matrix = Matrix::get_projection(0.785f, this->_width / this->_height, 0.1, 100000);
 	glUniformMatrix4fv(this->_uloc_P, 1, GL_FALSE, proj_matrix);
 	delete proj_matrix;
 }
@@ -95,7 +114,6 @@ void		OpenGL::_initShader(void)
 	vertSrc = this->_getSrc("shaders/vertex_shader.vert");
 	std::cout << "Framgent shader compilation" << std::endl;
 	fragSrc = this->_getSrc("shaders/fragment_shader.frag");
-	std::cout << *vertSrc << " " << *fragSrc << std::endl;
 	this->_vs = this->_getShader(vertSrc, GL_VERTEX_SHADER);
 	this->_fs = this->_getShader(fragSrc, GL_FRAGMENT_SHADER);
 	if (!(this->_shader_program = glCreateProgram()))
@@ -150,6 +168,11 @@ OpenGL &OpenGL::operator=(const OpenGL &src) {
 std::ostream &operator<<(std::ostream &stream, const OpenGL &obj) {
 	(void)obj;
 	return stream;
+}
+
+GLuint		OpenGL::getParticlesColorVBO(void)
+{
+	return this->_vbo[1];
 }
 
 GLuint		OpenGL::getParticlesVBO(void)

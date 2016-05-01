@@ -6,6 +6,7 @@
 # include <iostream>
 # include <sys/time.h>
 # include "Timer.hpp"
+# include "Control.hpp"
 
 class GLFWManager {
 	public:
@@ -16,9 +17,12 @@ class GLFWManager {
 		friend std::ostream &operator<< (std::ostream &, const GLFWManager &);
 		void		run(void);
 		void		setCursorPos(double xPos, double yPos);
+		Control		ctrl;
+		void		updateCtrl(void);
 	private:
 		void		_initGlfw(void);
 		void		_tick(void);
+		void		_inLoop(void);
 
 		GLFWwindow	*_window;
 		int			_width;

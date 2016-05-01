@@ -11,6 +11,7 @@ SRC= main.cpp \
 	 TaskInitParticles.cpp \
 	 TaskApplyVel.cpp \
 	 Timer.cpp \
+	 Control.cpp \
 	 Task.cpp
 
 OBJ= $(SRC:.cpp=.o)

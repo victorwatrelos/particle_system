@@ -7,8 +7,18 @@ static void		error_callback(int error, const char* description)
 }
 
 GLFWManager::GLFWManager( void ) 
-	: _width(1500), _height(1000), _nbParticles(3000000) {
+	: _width(1920), _height(1170), _nbParticles(3000000) {
 	this->_initGlfw();
+}
+
+static void			key_callback(GLFWwindow *window, int key,
+		int scancode, int action, int mods)
+{
+	GLFWManager	*glfwManager;
+
+	glfwManager = reinterpret_cast<GLFWManager *>(glfwGetWindowUserPointer(window));
+	glfwManager->ctrl.addInput(key, scancode, action, mods);
+	glfwManager->updateCtrl();
 }
 
 static void cursorCallback(GLFWwindow* window, double xPos, double yPos)
@@ -17,6 +27,12 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos)
 
 	glfwManager = reinterpret_cast<GLFWManager *>(glfwGetWindowUserPointer(window));
 	glfwManager->setCursorPos(xPos, yPos);
+}
+
+void	GLFWManager::updateCtrl(void)
+{
+	this->_openGL->setBorderSize(this->ctrl.getZoom());
+	this->_openCL->setBorderSize(this->ctrl.getZoom());
 }
 
 void	GLFWManager::setCursorPos(double xPos, double yPos)
@@ -29,13 +45,15 @@ void	GLFWManager::_tick(void)
 {
 	struct timeval	time;
 	int64_t			tmpTime;
+	float			calcFps;
 
 	gettimeofday(&time, NULL);
 	tmpTime = time.tv_sec * 1000000 + time.tv_usec;
 	if (tmpTime - this->_time > 1000000)
 	{
+		calcFps = 1.0f / (this->_timerTotal.getMsFloatAverage() / 1000.f);
 		this->_time = tmpTime;
-		glfwSetWindowTitle(this->_window, std::to_string(this->_nbFrame).c_str());
+		glfwSetWindowTitle(this->_window, (std::to_string(calcFps) + " / " + std::to_string(this->_nbFrame)).c_str());
 		std::cout << "FPS:\t\t" << this->_nbFrame << std::endl;
 		std::cout << "OpenCL av:\t" << this->_timerOpenCL.getMsFloatAverage() << "ms" << std::endl;
 		std::cout << "OpenGL av:\t" << this->_timerOpenGL.getMsFloatAverage() << "ms" << std::endl;
@@ -46,6 +64,27 @@ void	GLFWManager::_tick(void)
 
 }
 
+void	GLFWManager::_inLoop(void)
+{
+		this->_timerTotal.start();
+		this->ctrl.loop();
+		this->updateCtrl();
+	//	this->_timerOpenCL.start();
+		if (this->ctrl.getGravity())
+			this->_openCL->setPos(this->_xPos, this->_yPos);
+		if (!this->ctrl.isRunning() && this->ctrl.isSetCenter())
+			this->_openCL->initParticles();
+		if (this->ctrl.isRunning())
+			this->_openCL->loop();
+//		this->_timerOpenCL.stop();
+//		this->_timerOpenGL.start();
+		this->_openGL->draw();
+//		this->_timerOpenGL.stop();
+		glfwPollEvents();
+		glfwSwapBuffers(this->_window);
+		this->_timerTotal.stop();
+}
+
 void	GLFWManager::run(void) {
 	char	str[512];
 
@@ -54,17 +93,7 @@ void	GLFWManager::run(void) {
 	glfwSwapBuffers(this->_window);
 	while (!glfwWindowShouldClose(this->_window))
 	{
-		this->_timerOpenCL.start();
-		this->_timerTotal.start();
-		this->_openCL->setPos(this->_xPos, this->_yPos);
-		this->_openCL->loop();
-		this->_timerOpenCL.stop();
-		this->_timerOpenGL.start();
-		this->_openGL->draw();
-		this->_timerOpenGL.stop();
-		glfwPollEvents();
-		glfwSwapBuffers(this->_window);
-		this->_timerTotal.stop();
+		this->_inLoop();
 		this->_tick();
 		(void)str;
 	}
@@ -72,6 +101,8 @@ void	GLFWManager::run(void) {
 
 void	GLFWManager::_initGlfw(void)
 {
+	float		ratio;
+
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
         exit(1);
@@ -88,10 +119,12 @@ void	GLFWManager::_initGlfw(void)
 	glfwSwapInterval(1);
 	glfwSetWindowUserPointer(this->_window, this);
 	glfwSetCursorPosCallback(this->_window, cursorCallback);
+	glfwSetKeyCallback(this->_window, key_callback);
 	glfwGetFramebufferSize(this->_window, &(this->_frameBufferWidth), &(this->_frameBufferHeight));
 	std::cout << "start opengl" << std::endl;
-	this->_openGL = new OpenGL(this->_frameBufferWidth, this->_frameBufferHeight, this->_nbParticles);
-	this->_openCL = new OpenCL(this->_openGL->getParticlesVBO(), this->_nbParticles);
+	this->_openGL = new OpenGL(this->_frameBufferWidth, this->_frameBufferHeight, this->_nbParticles, 30000);
+	ratio =  (float)(this->_height) / (float)(this->_width);
+	this->_openCL = new OpenCL(this->_openGL->getParticlesVBO(), this->_openGL->getParticlesColorVBO(), this->_nbParticles, ratio);
 }
 
 GLFWManager::GLFWManager (const GLFWManager &src) {

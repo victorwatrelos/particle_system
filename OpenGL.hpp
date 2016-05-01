@@ -12,7 +12,7 @@
 class OpenGL {
 	public:
 		OpenGL (void);
-		OpenGL (int32_t width, int32_t height, int32_t nbParticles);
+		OpenGL (int32_t width, int32_t height, int32_t nbParticles, float borderSize);
 		OpenGL (const OpenGL &);
 		virtual ~OpenGL ( void );
 		OpenGL &operator=(const OpenGL &);
@@ -21,6 +21,8 @@ class OpenGL {
 		void		setDynUniform(void);
 		void		draw(void);
 		GLuint		getParticlesVBO(void);
+		GLuint		getParticlesColorVBO(void);
+		void		setBorderSize(float borderSize);
 	private:
 		int32_t		_width;
 		int32_t		_height;
@@ -32,12 +34,15 @@ class OpenGL {
 		GLuint		_shader_program;
 		GLint		_uloc_P;
 		GLint		_uloc_R;
+		GLint		_uloc_T;
+		float		_borderSize;
 
 		void			_initOpenGL(void);
 		void			_initShader(void);
 		void			_initBuffer(void);
 		void			_setUniformLocation(void);
 		void			_setStaticUniform(void);
+		void			_setTrans(void);
 		std::string		*_getSrc(std::string filename) const;
 		static GLuint	_getShader(const std::string *shaderSrc, GLenum shaderType);
 };

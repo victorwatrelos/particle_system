@@ -1,11 +1,10 @@
 #include "OpenCL.hpp"
 
-OpenCL::OpenCL( GLuint particlesVBO, int nbParticles)
-	: _nbParticles(nbParticles), _vbo(particlesVBO), _boxZ(5.0f) {
+OpenCL::OpenCL( GLuint particlesVBO, GLuint particlesColorVBO, int nbParticles, float ratio)
+	: _nbParticles(nbParticles), _vbo(particlesVBO), _colorVBO(particlesColorVBO), _boxZ(5.0f), _ratio(ratio) {
 	//	this->_boxX = //sqrt(nbParticles);
 //		this->_boxY = //sqrt(nbParticles);
-		this->_boxX = 46.42f;
-		this->_boxY = this->_boxZ = 46.42f;
+		this->_boxY = this->_boxZ = this->_boxX = 1000.f;
 	this->_initOpenCL();
 }
 
@@ -20,10 +19,15 @@ void	OpenCL::_initOpenCL(void)
 	this->_initTask();
 	this->_createCommandQueue();
 	this->_setKernelArg();
-	std::cout << "Enqueue" << std::endl;
+	this->initParticles();
+}
+
+void	OpenCL::initParticles(void)
+{
+	this->_acquireGLObject();
 	this->_taskInitParticles->enqueueKernel(this->_commandQueue);
+	this->_releaseGLObject();
 	clFinish(this->_commandQueue);
-	std::cout << "Stop" << std::endl;
 }
 
 void	OpenCL::_setKernelArg(void)
@@ -53,16 +57,24 @@ void	OpenCL::_setApplyVelArg(void)
 				&this->_particlesVelocity),
 			"clSetKernelArg setApplyVelArg 1");
 	this->_setDynApplyVelArg();
+	checkCLSuccess(clSetKernelArg(kernel, 4, sizeof(cl_mem),
+				&this->_particlesColorVBO),
+			"clSetKernelArg setApplyVelArg 4");
+}
+
+void	OpenCL::setBorderSize(float size)
+{
+	this->_borderSize = size;
 }
 
 void	OpenCL::_setDynApplyVelArg(void)
 {
 	float		width, height;
 	cl_kernel	kernel = this->_taskApplyVel->getKernel();
-
-	width = 10000.f;
-	height = width * 1.f;
 	cl_float	x, y;
+
+	width = this->_borderSize * tan(0.392f) * 2.0f;
+	height = width;
 
 	x = this->_posX * width - width / 2.0f;
 	y = this->_posY * height - height/ 2.0f;
@@ -72,6 +84,15 @@ void	OpenCL::_setDynApplyVelArg(void)
 	checkCLSuccess(clSetKernelArg(kernel, 3, sizeof(cl_float),
 				&y),
 			"clSetKernelArg setApplyVelArg 3");
+
+	kernel = this->_taskInitParticles->getKernel();
+
+	checkCLSuccess(clSetKernelArg(kernel, 3, sizeof(cl_float),
+				&x),
+			"clSetKernelArg initParticles 3");
+	checkCLSuccess(clSetKernelArg(kernel, 4, sizeof(cl_float),
+				&y),
+			"clSetKernelArg initParticles 4");
 }
 
 void	OpenCL::_setInitParticlesArg(void)
@@ -85,6 +106,10 @@ void	OpenCL::_setInitParticlesArg(void)
 	checkCLSuccess(clSetKernelArg(kernel, 1, sizeof(cl_mem),
 				&this->_particlesVelocity),
 			"clSetKernelArg setInitParticlesArg 1");
+
+	checkCLSuccess(clSetKernelArg(kernel, 2, sizeof(cl_mem),
+				&this->_particlesColorVBO),
+			"clSetKernelArg setInitParticlesArg 2");
 }
 
 void	OpenCL::_initTask(void)
@@ -106,15 +131,27 @@ void	OpenCL::_initTask(void)
 	this->_taskApplyVel->createKernel();
 }
 
+void	OpenCL::_acquireGLObject(void)
+{
+	clEnqueueAcquireGLObjects(this->_commandQueue, 1, &(this->_particlesVBO), 0, NULL, NULL);
+	clEnqueueAcquireGLObjects(this->_commandQueue, 1, &(this->_particlesColorVBO), 0, NULL, NULL);
+}
+
+void	OpenCL::_releaseGLObject(void)
+{
+	clEnqueueReleaseGLObjects(this->_commandQueue, 1, &(this->_particlesVBO), 0, NULL, NULL);
+	clEnqueueReleaseGLObjects(this->_commandQueue, 1, &(this->_particlesColorVBO), 0, NULL, NULL);
+}
+
 void	OpenCL::loop(void)
 {
 	cl_kernel	kernel;
 
-	clEnqueueAcquireGLObjects(this->_commandQueue, 1, &(this->_particlesVBO), 0, NULL, NULL);
+	this->_acquireGLObject();
 	kernel = this->_taskApplyVel->getKernel();
 
 	this->_taskApplyVel->enqueueKernel(this->_commandQueue);
-	clEnqueueReleaseGLObjects(this->_commandQueue, 1, &(this->_particlesVBO), 0, NULL, NULL);
+	this->_releaseGLObject();
 	clFinish(this->_commandQueue);
 }
 
@@ -227,6 +264,15 @@ void	OpenCL::_bindVBOBuffer(void)
 			CL_MEM_READ_WRITE,
 			this->_vbo,
 			&err);
+
+    checkCLSuccess(err, "clCreateFromGLBuffer particles positions");
+
+	this->_particlesColorVBO = clCreateFromGLBuffer(
+			this->_context,
+			CL_MEM_READ_WRITE,
+			this->_colorVBO,
+			&err);
+    checkCLSuccess(err, "clCreateFromGLBuffer particles color");
 }
 
 void	OpenCL::_bindBuffer(void)
