@@ -5,7 +5,7 @@ TaskInitParticles::TaskInitParticles (cl_context context, cl_device_id device, c
 	this->_context = context;
 	this->_device = device;
 	this->_nbParticle = nbParticles;
-	this->_defineOptions.insert(t_DefineOption("COEFF_START", std::to_string(10.0f)));
+	this->_defineOptions.insert(t_DefineOption("COEFF_START", std::to_string(5.0f)));
 }
 
 void		TaskInitParticles::createKernel()

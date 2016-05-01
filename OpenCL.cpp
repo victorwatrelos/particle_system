@@ -4,7 +4,7 @@ OpenCL::OpenCL( GLuint particlesVBO, GLuint particlesColorVBO, int nbParticles, 
 	: _nbParticles(nbParticles), _vbo(particlesVBO), _colorVBO(particlesColorVBO), _boxZ(5.0f), _ratio(ratio) {
 	//	this->_boxX = //sqrt(nbParticles);
 //		this->_boxY = //sqrt(nbParticles);
-		this->_boxY = this->_boxZ = this->_boxX = 1000.f;
+		this->_boxY = this->_boxZ = this->_boxX = 144.22f;
 	this->_initOpenCL();
 }
 

@@ -1,8 +1,8 @@
 #include <iostream>
 #include <cmath>
 
-# define R_SPHERE 100.f
-# define STEP_SPHERE 41.8323f
+# define R_SPHERE 1000.f
+# define STEP_SPHERE 2.f
 # define STEP_CIRCLE (0.01f * M_PI)
 # define NB_POINT_PER_LINE 15
 
@@ -33,8 +33,6 @@ void	from_i(int i)
 {
 	int oa_index, teta_index, n_index;
 	int	tot_oa, tot_teta;
-	int	first_part_n;
-	int	second_par_n;
 
 	tot_oa = (int)((float)((R_SPHERE / STEP_SPHERE) * 2.f));
 	tot_teta = ((2.f * M_PI) / STEP_CIRCLE);
@@ -133,7 +131,7 @@ int main()
 	std::cout << "nb entry: " << nb_entry << "average n : " << nb_entry / nb_teta << std::endl;
 	*/
 	float	tmp = (4.f * R_SPHERE * M_PI * NB_POINT_PER_LINE) / (STEP_SPHERE * STEP_CIRCLE);
-	float 	o = (4 * R_SPHERE * M_PI * NB_POINT_PER_LINE) / (14343 * STEP_CIRCLE);
+	float 	o = (4 * R_SPHERE * M_PI * NB_POINT_PER_LINE) / (3000000 * STEP_CIRCLE);
 	std::cout << "tot: " << tot << " tot2: " << tot_2 << " tmp: " << tmp
 		<< " n: " << o << " n step sphere: " << STEP_SPHERE
 		<< std::endl;
