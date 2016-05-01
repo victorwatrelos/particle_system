@@ -22,6 +22,7 @@ class Control {
 		bool	getGravity(void);
 		bool	isRunning(void);
 		bool	isSetCenter(void);
+		bool	isCube(void);
 	private:
 		float		_zoom;
 		bool		_zoomBtnP = false;
@@ -29,6 +30,7 @@ class Control {
 		bool		_fixedGrav = true;
 		bool		_running = false;
 		bool		_setCenter = false;
+		bool		_isCube = true;
 };
 
 #endif

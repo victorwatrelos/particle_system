@@ -9,7 +9,8 @@ class TaskInitParticles : public Task {
 	public:
 		TaskInitParticles (cl_context context, cl_device_id device, cl_int nbParticles);
 		void		createKernel(void);
-		void		setBoxSize(float x, float y, float z);
+	private:
+		void		_setSphereDefine(void);
 };
 
 #endif

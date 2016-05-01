@@ -1,8 +1,8 @@
 #include <iostream>
 #include <cmath>
 
-# define R_SPHERE 1000.f
-# define STEP_SPHERE 2.f
+# define R_SPHERE 100.f
+# define STEP_SPHERE 6.f
 # define STEP_CIRCLE (0.01f * M_PI)
 # define NB_POINT_PER_LINE 15
 
@@ -18,7 +18,7 @@ void	calc_it(int oa_index, int teta_index, int n_index)
 	x = cos(teta) * r;
 	y = sin(teta) * r;
 	z = R_SPHERE - ((float)(oa_index) * STEP_SPHERE);
-/*	std::cout << "Dir: oa: " << oa
+	std::cout << "Dir: oa: " << oa
 		<< " teta: " << teta
 		<< " res: " << n
 		<< " x: " << x * n
@@ -26,7 +26,7 @@ void	calc_it(int oa_index, int teta_index, int n_index)
 		//<< " x: " << x
 		//<< " y: " << y
 		<< " z: " << z
-		<< std::endl;*/
+		<< std::endl;
 }
 
 void	from_i(int i)
@@ -90,15 +90,17 @@ int main()
 
 				float	res = (float)(j) / (float)(nb_point_per_line);
 		//		std::cout << "Ind teta: " << teta  << " coord: " << x * res << ", " << y * res << ", " << z << std::endl;
-			/*	std::cout << "Ind: oa: " << oa
+				std::cout << "(Gid " << nb_entry
+					<< ") Ind: oa: " << oa
 					<< " teta: " << teta
 					<< " res: " << res
 					<< " x: " << x * res
 					<< " y: " << y * res
-					//<< " x: " << x
-					//<< " y: " << y
 					<< " z: " << z
-					<< std::endl;*/
+					<< " n: " << res
+					<< " first_x: " << x
+					<< " first_y: " << y
+					<< std::endl;
 				/*std::cout << "Ind: oa: " << oa << " teta: " << teta
 				  << " res: " << res << " x: " << x * res << " y: " << y * res
 				  << " x: " << x
@@ -109,7 +111,7 @@ int main()
 				<< " teta_index: " << nb_teta
 				<< " n_index: " << j
 				<< std::endl;*/
-				from_i(nb_entry);
+				//from_i(nb_entry);
 
 				nb_n++;
 				nb_entry++;
@@ -131,7 +133,7 @@ int main()
 	std::cout << "nb entry: " << nb_entry << "average n : " << nb_entry / nb_teta << std::endl;
 	*/
 	float	tmp = (4.f * R_SPHERE * M_PI * NB_POINT_PER_LINE) / (STEP_SPHERE * STEP_CIRCLE);
-	float 	o = (4 * R_SPHERE * M_PI * NB_POINT_PER_LINE) / (3000000 * STEP_CIRCLE);
+	float 	o = (4.f * R_SPHERE * M_PI * NB_POINT_PER_LINE) / (100000 * STEP_CIRCLE);
 	std::cout << "tot: " << tot << " tot2: " << tot_2 << " tmp: " << tmp
 		<< " n: " << o << " n step sphere: " << STEP_SPHERE
 		<< std::endl;

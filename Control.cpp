@@ -38,6 +38,11 @@ void	Control::loop(void)
 		this->_zoom = fmax(this->_zoom - ZOOM_STEP, MIN_ZOOM);
 }
 
+bool	Control::isCube(void)
+{
+	return (this->_isCube);
+}
+
 void	Control::addInput(int key, int scancode, int action, int mods)
 {
 	//std::cout << "key: " << (char)key <<  " scancode: " << scancode << " action: " << action << " mods: " << mods << std::endl;
@@ -59,6 +64,8 @@ void	Control::addInput(int key, int scancode, int action, int mods)
 			this->_running = false;
 			this->_fixedGrav = false;
 		}
+		if (key == 'C')
+			this->_isCube = !this->_isCube;
 	}
 	else if (action == GLFW_RELEASE)
 	{

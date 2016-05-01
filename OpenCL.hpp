@@ -19,7 +19,7 @@ class OpenCL {
 		void			loop(void);
 		void			setPos(double x, double y);
 		void			setBorderSize(float size);
-		void			initParticles(void);
+		void			initParticles(int isCube);
 
 		OpenCL &operator=(const OpenCL &);
 		friend std::ostream &operator<< (std::ostream &, const OpenCL &);
@@ -39,6 +39,7 @@ class OpenCL {
 		void	_setDynApplyVelArg(void);
 		void	_acquireGLObject(void);
 		void	_releaseGLObject(void);
+		void	_setInitParticlesTypeArg(int isCube);
 
 		cl_context			_context;
 		cl_int				_nbDevices;

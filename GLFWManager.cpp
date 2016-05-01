@@ -6,8 +6,9 @@ static void		error_callback(int error, const char* description)
 	std::cout << "error: " << error << ", " << description << std::endl;
 }
 
-GLFWManager::GLFWManager( void ) 
-	: _width(500), _height(500), _nbParticles(1000000) {
+GLFWManager::GLFWManager( int nbParticles ) 
+	: _width(500), _height(500), _nbParticles(nbParticles) {
+	this->_time = 0;
 	this->_initGlfw();
 }
 
@@ -66,36 +67,33 @@ void	GLFWManager::_tick(void)
 
 void	GLFWManager::_inLoop(void)
 {
-		this->_timerTotal.start();
 		this->ctrl.loop();
 		this->updateCtrl();
-	//	this->_timerOpenCL.start();
+		this->_timerOpenCL.start();
 		if (this->ctrl.getGravity())
 			this->_openCL->setPos(this->_xPos, this->_yPos);
 		if (!this->ctrl.isRunning() && this->ctrl.isSetCenter())
-			this->_openCL->initParticles();
+			this->_openCL->initParticles(this->ctrl.isCube());
 		if (this->ctrl.isRunning())
 			this->_openCL->loop();
-//		this->_timerOpenCL.stop();
-//		this->_timerOpenGL.start();
+		this->_timerOpenCL.stop();
+		this->_timerOpenGL.start();
 		this->_openGL->draw();
-//		this->_timerOpenGL.stop();
-		glfwPollEvents();
-		glfwSwapBuffers(this->_window);
-		this->_timerTotal.stop();
+		this->_timerOpenGL.stop();
 }
 
 void	GLFWManager::run(void) {
-	char	str[512];
-
 	this->_nbFrame = 0;
 	this->_openGL->draw();
 	glfwSwapBuffers(this->_window);
 	while (!glfwWindowShouldClose(this->_window))
 	{
+		this->_timerTotal.start();
 		this->_inLoop();
+		glfwPollEvents();
+		glfwSwapBuffers(this->_window);
+		this->_timerTotal.stop();
 		this->_tick();
-		(void)str;
 	}
 }
 

@@ -14,7 +14,7 @@ __kernel void	applyVel(__global float3 *particles,
 	center = (float3)(centerX, centerY, 0.f);
 	dist = distance(center, particle);
 	color[gid] = (10000 - dist) / 15000.f;
-	if (dist < 1.0)
+	if (dist < 2.0)
 		return ;
 	vel += (center - particle) * (((float)(DIVIDEND)) / (pown(dist, 2)));
 	particlesVelocity[gid] = vel;

@@ -19,11 +19,12 @@ void	OpenCL::_initOpenCL(void)
 	this->_initTask();
 	this->_createCommandQueue();
 	this->_setKernelArg();
-	this->initParticles();
+	this->initParticles(1);
 }
 
-void	OpenCL::initParticles(void)
+void	OpenCL::initParticles(int isCube)
 {
+	this->_setInitParticlesTypeArg(isCube);
 	this->_acquireGLObject();
 	this->_taskInitParticles->enqueueKernel(this->_commandQueue);
 	this->_releaseGLObject();
@@ -95,6 +96,15 @@ void	OpenCL::_setDynApplyVelArg(void)
 			"clSetKernelArg initParticles 4");
 }
 
+void	OpenCL::_setInitParticlesTypeArg(int isCube)
+{
+	cl_kernel	kernel = this->_taskInitParticles->getKernel();
+
+	checkCLSuccess(clSetKernelArg(kernel, 5, sizeof(cl_int),
+				&isCube),
+			"clSetKernelArg setInitParticlesArg 5");
+}
+
 void	OpenCL::_setInitParticlesArg(void)
 {
 	cl_kernel	kernel = this->_taskInitParticles->getKernel();
@@ -110,6 +120,8 @@ void	OpenCL::_setInitParticlesArg(void)
 	checkCLSuccess(clSetKernelArg(kernel, 2, sizeof(cl_mem),
 				&this->_particlesColorVBO),
 			"clSetKernelArg setInitParticlesArg 2");
+	this->_setInitParticlesTypeArg(1);
+
 }
 
 void	OpenCL::_initTask(void)
@@ -119,7 +131,6 @@ void	OpenCL::_initTask(void)
 	gid = this->_nbParticles / PARTICLES_PER_WORK_ITEM;
 	this->_taskInitParticles = new TaskInitParticles(this->_context, this->_device, this->_nbParticles);
 	this->_taskInitParticles->setMaxGid(std::to_string(this->_nbParticles));
-	this->_taskInitParticles->setBoxSize(this->_boxX, this->_boxY, this->_boxZ);
 	this->_taskInitParticles->createKernel();
 
 	this->_taskApplyVel = new TaskApplyVel(this->_context, this->_device, this->_nbParticles);

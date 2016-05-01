@@ -9,16 +9,26 @@ void	printHelp(void)
 	std::cout << "t to move / stop moving the gravity center" << std::endl;
 	std::cout << "r to launch / stop the simulation" << std::endl;
 	std::cout << "f to set start position (Simulation must be not running)" << std::endl;
+	std::cout << "c to set init as cube or sphere" << std::endl;
 }
 
-int		main()
+int		main(int ac, char **av)
 {
-	GLFWManager		manager;
+	GLFWManager		*manager;
+	int				nbParticles;
 
+	if (ac < 2 || (nbParticles = std::atoi(av[1])) < 1 || nbParticles > 3100000)
+	{
+		std::cout << "./particle_system nb_particles (btw 1-3100000)" << std::endl;
+		return (1);
+	}
 	printHelp();
+	std::cout << nbParticles << std::endl;
+	manager = new GLFWManager(nbParticles);
 	try {
-		manager.run();
+		manager->run();
 	} catch (OpenCLException *e) {
 		std::cout << "OpenCL Exception, End of program" << std::endl;
 	}
+	return (0);
 }

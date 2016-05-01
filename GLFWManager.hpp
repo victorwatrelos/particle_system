@@ -10,7 +10,7 @@
 
 class GLFWManager {
 	public:
-		GLFWManager (void);
+		GLFWManager (int nbParticles);
 		GLFWManager (const GLFWManager &);
 		virtual ~GLFWManager ( void );
 		GLFWManager &operator=(const GLFWManager &);
