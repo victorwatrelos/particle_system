@@ -12,6 +12,6 @@ out vec4 in_color;
 void main()
 {
 	gl_Position = P * (vec4((in_Position.xyz), 1.0) * R + T);
-	gl_PointSize = 2.0;
+	gl_PointSize = 1.0;
 	in_color = vec4(1.0, 1.0 * in_Dist, 0.0, 1.0);
 }  

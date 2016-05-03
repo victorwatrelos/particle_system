@@ -33,10 +33,3 @@ void		TaskApplyVel::setGravityDefine(double massPoint, double massParticles, dou
 	this->_defineOptions.insert(t_DefineOption("G_CONST", convert(propConst)));
 	this->_defineOptions.insert(t_DefineOption("DIVIDEND", std::to_string(static_cast<float>(massPoint * massParticles * propConst))));
 }
-
-void		TaskApplyVel::setBoxSize(float x, float y, float z)
-{
-	this->_defineOptions.insert(t_DefineOption("SIZE_X", std::to_string(x)));
-	this->_defineOptions.insert(t_DefineOption("SIZE_Y", std::to_string(y)));
-	this->_defineOptions.insert(t_DefineOption("SIZE_Z", std::to_string(z)));
-}

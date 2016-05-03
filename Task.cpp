@@ -78,7 +78,7 @@ void        Task::_createKernel(std::string filename, std::string kernelName)
     this->_program = clCreateProgramWithSource(this->_context, 1, &char_source, NULL, NULL);
     if (this->_program == NULL) {
         std::cerr << "Program creation fail" << std::endl;
-        throw new OpenCLException;
+        throw OpenCLException();
     }
     delete source;
 
@@ -91,7 +91,7 @@ void        Task::_createKernel(std::string filename, std::string kernelName)
         std::cerr << "Error on compilation(" << filename << ") options: '" << options << "'" << std::endl;
         std::cerr << "error " << err << std::endl;
         std::cerr << "buildlog: " << buildlog << std::endl;
-        throw new OpenCLException();
+        throw OpenCLException();
     }
 
     this->_kernel = clCreateKernel(this->_program, kernelName.c_str(), &err);

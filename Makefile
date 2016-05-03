@@ -1,5 +1,5 @@
-CC= g++
-FLAGS=-Wall -Wextra -Wno-deprecated-declarations -std=c++11 -I./includes/ -I./includes/GLFW -O3
+CC= clang++
+FLAGS=-Wall -Wextra -Wno-deprecated-declarations -std=c++11 -I./includes/ -I./includes/GLFW -g
 NAME=particle_system
 
 SRC= main.cpp \

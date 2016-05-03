@@ -1,10 +1,7 @@
 #include "OpenCL.hpp"
 
 OpenCL::OpenCL( GLuint particlesVBO, GLuint particlesColorVBO, int nbParticles, float ratio)
-	: _nbParticles(nbParticles), _vbo(particlesVBO), _colorVBO(particlesColorVBO), _boxZ(5.0f), _ratio(ratio) {
-	//	this->_boxX = //sqrt(nbParticles);
-//		this->_boxY = //sqrt(nbParticles);
-		this->_boxY = this->_boxZ = this->_boxX = 144.22f;
+	: _nbParticles(nbParticles), _vbo(particlesVBO), _colorVBO(particlesColorVBO), _ratio(ratio) {
 	this->_initOpenCL();
 }
 
@@ -135,7 +132,6 @@ void	OpenCL::_initTask(void)
 
 	this->_taskApplyVel = new TaskApplyVel(this->_context, this->_device, this->_nbParticles);
 	this->_taskApplyVel->setMaxGid(std::to_string(gid));
-	this->_taskApplyVel->setBoxSize(this->_boxX, this->_boxY, this->_boxZ);
 	this->_taskApplyVel->setGravityDefine(5.9E13, 1.0E1, 6.673E-11);
 	this->_taskApplyVel->setNbPerWorkItem(PARTICLES_PER_WORK_ITEM);
 	this->_taskApplyVel->setNbParticles(this->_nbParticles);
@@ -221,7 +217,7 @@ void    OpenCL::_getDeviceInfo() {
 void    OpenCL::checkCLSuccess(cl_int errNum, std::string name) {
     if (errNum != CL_SUCCESS) {
         std::cout << "OpenCL fail on " << name << std::endl;
-        throw new OpenCLException();
+        throw OpenCLException();
     }
 }
 
@@ -248,7 +244,7 @@ void    OpenCL::_createContext(void) {
         "clGetContextInfo");
 
     if (this->_nbDevices < 1) {
-        throw new OpenCLException();
+        throw OpenCLException();
     }
 
     checkCLSuccess(clGetContextInfo(this->_context,
@@ -302,6 +298,8 @@ void	OpenCL::_bindBuffer(void)
 
 void	OpenCL::_release(void)
 {
+	this->_taskInitParticles->releaseKernel();
+	this->_taskApplyVel->releaseKernel();
 	clReleaseMemObject(this->_particlesVBO);
 	clReleaseMemObject(this->_particlesVelocity);
 	clReleaseContext(this->_context);
@@ -313,7 +311,12 @@ OpenCL::OpenCL (const OpenCL &src) {
 
 OpenCL::~OpenCL ( void ) {
 	this->_release();
-	delete this->_maxWorkItemSize;
+	if (this->_maxWorkItemSize)
+		delete this->_maxWorkItemSize;
+	if (this->_taskApplyVel)
+		delete this->_taskApplyVel;
+	if (this->_taskInitParticles)
+		delete this->_taskInitParticles;
 }
 
 OpenCL &OpenCL::operator=(const OpenCL &src) {

@@ -9,6 +9,8 @@ static void		error_callback(int error, const char* description)
 GLFWManager::GLFWManager( int nbParticles ) 
 	: _width(500), _height(500), _nbParticles(nbParticles) {
 	this->_time = 0;
+	this->_xPos = 0.5f;
+	this->_yPos = 0.5f;
 	this->_initGlfw();
 }
 
@@ -69,17 +71,17 @@ void	GLFWManager::_inLoop(void)
 {
 		this->ctrl.loop();
 		this->updateCtrl();
-		this->_timerOpenCL.start();
+	//	this->_timerOpenCL.start();
 		if (this->ctrl.getGravity())
 			this->_openCL->setPos(this->_xPos, this->_yPos);
 		if (!this->ctrl.isRunning() && this->ctrl.isSetCenter())
 			this->_openCL->initParticles(this->ctrl.isCube());
 		if (this->ctrl.isRunning())
 			this->_openCL->loop();
-		this->_timerOpenCL.stop();
-		this->_timerOpenGL.start();
+		//this->_timerOpenCL.stop();
+	//	this->_timerOpenGL.start();
 		this->_openGL->draw();
-		this->_timerOpenGL.stop();
+		//this->_timerOpenGL.stop();
 }
 
 void	GLFWManager::run(void) {
@@ -88,12 +90,12 @@ void	GLFWManager::run(void) {
 	glfwSwapBuffers(this->_window);
 	while (!glfwWindowShouldClose(this->_window))
 	{
-		this->_timerTotal.start();
+		//this->_timerTotal.start();
 		this->_inLoop();
 		glfwPollEvents();
 		glfwSwapBuffers(this->_window);
-		this->_timerTotal.stop();
-		this->_tick();
+		//this->_timerTotal.stop();
+		//this->_tick();
 	}
 }
 
@@ -119,7 +121,7 @@ void	GLFWManager::_initGlfw(void)
 	glfwSetCursorPosCallback(this->_window, cursorCallback);
 	glfwSetKeyCallback(this->_window, key_callback);
 	glfwGetFramebufferSize(this->_window, &(this->_frameBufferWidth), &(this->_frameBufferHeight));
-	std::cout << "start opengl" << std::endl;
+	std::cout << "Start opengl" << std::endl;
 	this->_openGL = new OpenGL(this->_frameBufferWidth, this->_frameBufferHeight, this->_nbParticles, 30000);
 	ratio =  (float)(this->_height) / (float)(this->_width);
 	this->_openCL = new OpenCL(this->_openGL->getParticlesVBO(), this->_openGL->getParticlesColorVBO(), this->_nbParticles, ratio);
@@ -130,7 +132,11 @@ GLFWManager::GLFWManager (const GLFWManager &src) {
 }
 
 GLFWManager::~GLFWManager ( void ) {
-	delete this->_openGL;
+	if (this->_openGL)
+		delete this->_openGL;
+	if (this->_openCL)
+		delete this->_openCL;
+	glfwDestroyWindow(this->_window);
 	glfwTerminate();
 }
 

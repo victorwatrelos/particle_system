@@ -14,21 +14,25 @@ void	printHelp(void)
 
 int		main(int ac, char **av)
 {
-	GLFWManager		*manager;
+	GLFWManager		*manager = NULL;
 	int				nbParticles;
 
-	if (ac < 2 || (nbParticles = std::atoi(av[1])) < 1 || nbParticles > 3100000)
+	if (ac < 2 || (nbParticles = std::atoi(av[1])) < 1 || nbParticles > 4100000)
 	{
 		std::cout << "./particle_system nb_particles (btw 1-3100000)" << std::endl;
 		return (1);
 	}
 	printHelp();
 	std::cout << nbParticles << std::endl;
-	manager = new GLFWManager(nbParticles);
 	try {
+		manager = new GLFWManager(nbParticles);
 		manager->run();
-	} catch (OpenCLException *e) {
+	} catch (OpenCLException& e) {
 		std::cout << "OpenCL Exception, End of program" << std::endl;
+	} catch (OpenGLException& e) {
+		std::cout << "OpenGL Exception, End of program" << std::endl;
 	}
+	if (manager)
+		delete manager;
 	return (0);
 }

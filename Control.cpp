@@ -1,7 +1,7 @@
 #include "Control.hpp"
 
 Control::Control( void ) 
-	: _zoom(30000.f)
+	: _zoom(50000.f)
 {
 
 }

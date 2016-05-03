@@ -17,7 +17,6 @@ void	OpenGL::setBorderSize(float borderSize)
 }
 
 void	OpenGL::_initOpenGL(void) {
-	std::cout << "OK" << std::endl;
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glViewport(0, 0, this->_width, this->_height);
@@ -41,7 +40,6 @@ void		OpenGL::_initBuffer(void)
 {
 	GLuint						attrloc;
 
-	std::cout << "init buffer" << std::endl;
 	glGenVertexArrays(1, &(this->_vao));
 	glBindVertexArray(this->_vao);
 	glGenBuffers(2, this->_vbo);
@@ -87,7 +85,7 @@ void		OpenGL::_setStaticUniform(void)
 {
 	GLfloat		*proj_matrix;
 
-	proj_matrix = Matrix::get_projection(0.785f, this->_width / this->_height, 0.1, 100000);
+	proj_matrix = Matrix::get_projection(0.785f, this->_width / this->_height, 0.1, 600000);
 	glUniformMatrix4fv(this->_uloc_P, 1, GL_FALSE, proj_matrix);
 	delete proj_matrix;
 }
@@ -116,8 +114,10 @@ void		OpenGL::_initShader(void)
 	fragSrc = this->_getSrc("shaders/fragment_shader.frag");
 	this->_vs = this->_getShader(vertSrc, GL_VERTEX_SHADER);
 	this->_fs = this->_getShader(fragSrc, GL_FRAGMENT_SHADER);
+	delete vertSrc;
+	delete fragSrc;
 	if (!(this->_shader_program = glCreateProgram()))
-		throw new OpenGLException();
+		throw OpenGLException();
 	glAttachShader(this->_shader_program, this->_vs);
 	glAttachShader(this->_shader_program, this->_fs);
 	glLinkProgram(this->_shader_program);
@@ -147,7 +147,7 @@ GLuint		OpenGL::_getShader(const std::string *shaderSrc, GLenum shaderType)
 		glGetShaderInfoLog(shader, 8192, &log_length,info_log);
 		std::cout << "ERROR: " << info_log << std::endl;
 		glDeleteShader(shader);
-		throw new OpenGLException();
+		throw OpenGLException();
 	}
 	return (shader);
 }
@@ -158,6 +158,7 @@ OpenGL::OpenGL(const OpenGL &src) {
 
 OpenGL::~OpenGL( void ) {
 	glDeleteProgram(this->_shader_program);
+	glDeleteBuffers(2, this->_vbo);
 }
 
 OpenGL &OpenGL::operator=(const OpenGL &src) {

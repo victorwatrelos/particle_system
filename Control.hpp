@@ -5,7 +5,7 @@
 # include <iostream>
 # include <math.h>
 # define ZOOM_STEP 1000.f
-# define MAX_ZOOM 50000.f
+# define MAX_ZOOM 200000.f
 # define MIN_ZOOM 500.f
 
 class Control {

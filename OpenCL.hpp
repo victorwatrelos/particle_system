@@ -55,14 +55,11 @@ class OpenCL {
 		GLuint				_colorVBO;
 		TaskInitParticles	*_taskInitParticles;
 		TaskApplyVel		*_taskApplyVel;
-		float				_boxX;
-		float				_boxY;
-		float				_boxZ;
 		float				_posX;
 		float				_posY;
 		cl_uint				_maxComputeUnit;
 		float				_ratio;
-		float				_borderSize = 30000.f;
+		float				_borderSize = 50000.f;
 
 };
 
