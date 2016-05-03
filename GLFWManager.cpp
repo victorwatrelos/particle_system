@@ -7,7 +7,7 @@ static void		error_callback(int error, const char* description)
 }
 
 GLFWManager::GLFWManager( int nbParticles ) 
-	: _width(500), _height(500), _nbParticles(nbParticles) {
+	: _width(1000), _height(1000), _nbParticles(nbParticles) {
 	this->_time = 0;
 	this->_xPos = 0.5f;
 	this->_yPos = 0.5f;
@@ -57,10 +57,10 @@ void	GLFWManager::_tick(void)
 		calcFps = 1.0f / (this->_timerTotal.getMsFloatAverage() / 1000.f);
 		this->_time = tmpTime;
 		glfwSetWindowTitle(this->_window, (std::to_string(calcFps) + " / " + std::to_string(this->_nbFrame)).c_str());
-		std::cout << "FPS:\t\t" << this->_nbFrame << std::endl;
+/*		std::cout << "FPS:\t\t" << this->_nbFrame << std::endl;
 		std::cout << "OpenCL av:\t" << this->_timerOpenCL.getMsFloatAverage() << "ms" << std::endl;
 		std::cout << "OpenGL av:\t" << this->_timerOpenGL.getMsFloatAverage() << "ms" << std::endl;
-		std::cout << "Total av:\t" << this->_timerTotal.getMsFloatAverage() << "ms" << std::endl;
+		std::cout << "Total av:\t" << this->_timerTotal.getMsFloatAverage() << "ms" << std::endl;*/
 		this->_nbFrame = 0;
 	}
 	this->_nbFrame++;
@@ -71,17 +71,17 @@ void	GLFWManager::_inLoop(void)
 {
 		this->ctrl.loop();
 		this->updateCtrl();
-	//	this->_timerOpenCL.start();
+		this->_timerOpenCL.start();
 		if (this->ctrl.getGravity())
 			this->_openCL->setPos(this->_xPos, this->_yPos);
 		if (!this->ctrl.isRunning() && this->ctrl.isSetCenter())
 			this->_openCL->initParticles(this->ctrl.isCube());
 		if (this->ctrl.isRunning())
 			this->_openCL->loop();
-		//this->_timerOpenCL.stop();
-	//	this->_timerOpenGL.start();
+		this->_timerOpenCL.stop();
+		this->_timerOpenGL.start();
 		this->_openGL->draw();
-		//this->_timerOpenGL.stop();
+		this->_timerOpenGL.stop();
 }
 
 void	GLFWManager::run(void) {
@@ -90,12 +90,12 @@ void	GLFWManager::run(void) {
 	glfwSwapBuffers(this->_window);
 	while (!glfwWindowShouldClose(this->_window))
 	{
-		//this->_timerTotal.start();
+		this->_timerTotal.start();
 		this->_inLoop();
 		glfwPollEvents();
 		glfwSwapBuffers(this->_window);
-		//this->_timerTotal.stop();
-		//this->_tick();
+		this->_timerTotal.stop();
+		this->_tick();
 	}
 }
 

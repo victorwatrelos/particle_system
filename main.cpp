@@ -17,7 +17,7 @@ int		main(int ac, char **av)
 	GLFWManager		*manager = NULL;
 	int				nbParticles;
 
-	if (ac < 2 || (nbParticles = std::atoi(av[1])) < 1 || nbParticles > 4100000)
+	if (ac < 2 || (nbParticles = std::atoi(av[1])) < 1 || nbParticles > 3100000)
 	{
 		std::cout << "./particle_system nb_particles (btw 1-3100000)" << std::endl;
 		return (1);
