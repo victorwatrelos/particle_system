@@ -43,13 +43,20 @@ bool	Control::isCube(void)
 	return (this->_isCube);
 }
 
+bool	Control::isQuit(void)
+{
+	return (this->_quit);
+}
+
 void	Control::addInput(int key, int scancode, int action, int mods)
 {
-	//std::cout << "key: " << (char)key <<  " scancode: " << scancode << " action: " << action << " mods: " << mods << std::endl;
+	//std::cout << "key: " << key <<  " scancode: " << scancode << " action: " << action << " mods: " << mods << std::endl;
 	(void)scancode;
 	(void)mods;
 	if (action == GLFW_PRESS)
 	{
+		if (key == 256)
+			this->_quit = true;
 		if (key == '=')
 			this->_zoomBtnM = true;
 		if (key == '-')

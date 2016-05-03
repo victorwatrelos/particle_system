@@ -166,6 +166,7 @@ void    OpenCL::_getDeviceInfo() {
     size_t      size;
     char        *deviceName;
 
+	std::cout << "OpenCL device info: " << std::endl;
     checkCLSuccess(clGetDeviceInfo(this->_device,
                 CL_DEVICE_NAME,
                 0,
@@ -179,7 +180,7 @@ void    OpenCL::_getDeviceInfo() {
                 deviceName,
                 NULL),
             "clGetDeviceInfo info");
-    std::cout << "Device: " << deviceName << std::endl;
+    std::cout << "\tDevice: " << deviceName << std::endl;
     delete[] deviceName;
     checkCLSuccess(clGetDeviceInfo(this->_device,
                 CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS,
@@ -197,7 +198,7 @@ void    OpenCL::_getDeviceInfo() {
                 NULL),
             "clGetDeviceInfo max working dimensions");
 
-    std::cout << "(";
+    std::cout << "\tMax working dim: (";
     for (cl_int i = 0; i < this->_maxWorkingDimensions; i++) {
         std::cout << this->_maxWorkItemSize[i] << ", ";
     }
@@ -209,7 +210,7 @@ void    OpenCL::_getDeviceInfo() {
                 &(this->_maxComputeUnit),
                 NULL),
             "clGetDeviceInfo max compute units");
-	std::cout << "Max device compute unit: " << this->_maxComputeUnit << std::endl;
+	std::cout << "\tMax device compute unit: " << this->_maxComputeUnit << std::endl;
 
 
 }

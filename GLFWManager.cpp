@@ -88,7 +88,7 @@ void	GLFWManager::run(void) {
 	this->_nbFrame = 0;
 	this->_openGL->draw();
 	glfwSwapBuffers(this->_window);
-	while (!glfwWindowShouldClose(this->_window))
+	while (!glfwWindowShouldClose(this->_window) && !(this->ctrl.isQuit()))
 	{
 		this->_timerTotal.start();
 		this->_inLoop();
@@ -121,10 +121,10 @@ void	GLFWManager::_initGlfw(void)
 	glfwSetCursorPosCallback(this->_window, cursorCallback);
 	glfwSetKeyCallback(this->_window, key_callback);
 	glfwGetFramebufferSize(this->_window, &(this->_frameBufferWidth), &(this->_frameBufferHeight));
-	std::cout << "Start opengl" << std::endl;
 	this->_openGL = new OpenGL(this->_frameBufferWidth, this->_frameBufferHeight, this->_nbParticles, 30000);
 	ratio =  (float)(this->_height) / (float)(this->_width);
 	this->_openCL = new OpenCL(this->_openGL->getParticlesVBO(), this->_openGL->getParticlesColorVBO(), this->_nbParticles, ratio);
+	this->updateCtrl();
 }
 
 GLFWManager::GLFWManager (const GLFWManager &src) {

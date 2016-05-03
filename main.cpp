@@ -23,7 +23,6 @@ int		main(int ac, char **av)
 		return (1);
 	}
 	printHelp();
-	std::cout << nbParticles << std::endl;
 	try {
 		manager = new GLFWManager(nbParticles);
 		manager->run();

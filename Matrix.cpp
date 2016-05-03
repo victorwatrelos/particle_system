@@ -12,18 +12,6 @@ GLfloat		*Matrix::get_identity(void)
 	return (res);
 }
 
-static void	display_matrix(GLfloat *m)
-{
-	for (int i = 0; i < 4; ++i)
-	{
-		for (int j = 0; j < 4; ++j)
-		{
-			std::cout << m[i * 4 + j] << ", ";
-		}
-		std::cout << std::endl;
-	}
-}
-
 GLfloat		*Matrix::get_projection(GLfloat fovy, GLfloat aspect, GLfloat near, GLfloat far)
 {
 	GLfloat		f;
@@ -37,7 +25,6 @@ GLfloat		*Matrix::get_projection(GLfloat fovy, GLfloat aspect, GLfloat near, GLf
 	res[11] = -1.0f;
 	res[14] = 2.0f * (far * near) / (near - far);
 	res[15] = 0.0f;
-	display_matrix(res);
 	return (res);
 }
 

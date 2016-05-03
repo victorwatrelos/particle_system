@@ -108,9 +108,7 @@ void		OpenGL::_initShader(void)
 	std::string		*vertSrc;
 	std::string		*fragSrc;
 
-	std::cout << "Vertex shader compilation" << std::endl;
 	vertSrc = this->_getSrc("shaders/vertex_shader.vert");
-	std::cout << "Framgent shader compilation" << std::endl;
 	fragSrc = this->_getSrc("shaders/fragment_shader.frag");
 	this->_vs = this->_getShader(vertSrc, GL_VERTEX_SHADER);
 	this->_fs = this->_getShader(fragSrc, GL_FRAGMENT_SHADER);
